@@ -1,5 +1,8 @@
 # FEUP-PFL
 
+* ficheiro que tenha testcases (readme probably) e tmb dar para input um exemplo que o prof dá.
+* vai haver em principio sempre espaços
+
 Cada grupo deve entregar um ficheiro README.pdf e o código-fonte, bem como realizar uma demonstração do trabalho. A submissão deve ser em formato ZIP, e o nome do ficheiro deve ser:
 
 *PFL_TP1_#GRUPO.zip*
