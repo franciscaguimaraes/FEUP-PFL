@@ -1,9 +1,65 @@
 {- ex: 2xy + 7 -> [(2, [(x, 1), (y,1)]), (7, [])]-}
+-- [ (0 , [('x',2)] ) , (2, [('y',1)]) , (5, [('z', 1)]) , (1 , [('y',1)]) , (7 , [('y',2)]) ] -> (0*x^2 + 2*y + 5*z + y + 7*y^2)
 type Mono = (Int, [(Char, Int)])
 type Poly = [Mono]
 
--- encontra o char e diminui o seu expoente, se o expoente for 0 e quisermos
--- derivar, elimina o char direto
+----------------------------------------------------------------------------------------------
+-- BASE FUNCTIONS TO REMOVE coeficientE NULL AND EXPOENTE NULL
+removeExpNull :: (Num b, Eq b) => [(a, b)] -> [(a, b)]
+removeExpNull [] = []
+removeExpNull ((x,y):xs)
+    | y == 0 = removeExpNull xs
+    | otherwise = (x,y): removeExpNull xs
+
+ -- REMOVES ALL MONO WHO HAVE 0 IN COEF AND CALLS EXP NULL TO SEE IF THEY ARE OK
+removeCoefNull :: Poly -> Poly
+removeCoefNull [] = []
+removeCoefNull ((0, x:xs ):xss) = removeCoefNull xss
+removeCoefNull ((a,[]):xs) = (a,[]):removeCoefNull xs
+removeCoefNull ((a,(b, c):xs):xss) = (a, removeExpNull ((b,c):xs) ): removeCoefNull xss
+----------------------------------------------------------------------------------------------
+
+-- ADDS MONO AND KEEPS SAME LITERAL
+addMono :: Mono -> Mono -> Mono
+addMono m1 m2 = (fst m1 + fst m2, snd m1)
+
+-- ADDS MONO USING ABOVE FUNC, THIS FUNCTION ADDS MONOS WITH SAME LITERAL EXPRESSION
+addSame :: Mono -> Poly-> Poly
+addSame m [] = [m]
+addSame m (x:xs)
+    | snd m == snd x = addMono m x:xs
+    | otherwise = x:addSame m xs
+----------------------------------------------------------------------------------------
+
+-- THIS FUNCTION NORMALIZES POLY USING ABOVE FUNC OF ONLY ADDING IF SAME
+normalizePoly :: Poly -> Poly
+normalizePoly p
+ | null p = []
+ | otherwise = normalizeFunc (removeCoefNull p)
+ where normalizeFunc xs
+        | null xs = []
+        | otherwise = addSame (head xs) (normalizeFunc (tail xs))
+
+----------------------------------------------------------------------------------------
+
+-- THIS FUNCTION ADDS POLYS BY CONCAT TWO INTO ONE AND THEN NORMALIZING IT, ADDING SAME EXPRESSIONS, AS EXPECTED
+addPoly :: Poly -> Poly -> Poly
+addPoly p1 p2
+ | p1 == [] = p2
+ | p2 == [] = p1
+ | otherwise = normalizePoly ( p1 ++ p2)
+
+---------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------------
+
+-- DERIVADA FUNCTIONS
 mylookup :: (Eq a, Num b, Ord b) => a -> [(a,b)] -> [(a,b)]
 mylookup _ [] =  []
 mylookup key ((x,y) : xys)
@@ -22,60 +78,36 @@ monoDer m c
 polyDer :: Poly -> Char -> Poly
 polyDer poly c =  map (\mono -> monoDer mono c) poly
 
--- TODO: finish list to string output
+--------------------------------------------------------------------------------------------
 
-
+-- LIST TO STRING PRINT FUNCTIONS
 listToString :: Poly -> String
 listToString p
--- caso inicial tá
- | length p == 0 = ""
- | fst (head p) == 0 = ""
- | snd (head p) == [] = ""
--- casos restantes
- | otherwise = show(fst (head p) ) ++ literalsToString(snd (head p))
+ | length p == 1 = show(fst (head p) ) ++ literalsToString(snd (head p))
+ | fst (head p) == 0 = "" ++ listToString (drop 1 p)
+ | snd (head p) == [] = show(fst (head p)) ++ " " ++ "+" ++ " " ++ listToString (drop 1 p)
+ | otherwise = show(fst (head p) ) ++ literalsToString(snd (head p)) ++ " " ++ "+" ++ " " ++ listToString (drop 1 p)
 
- literalsToString :: [(a, b)] -> [Char]
- literalsToString m
-  | length m == 1 && snd (head m) /= 1 = show(fst m) ++ "^" ++ show(snd m)
-  | snd (head m) == 1 = show(fst m) ++ " " ++ literalsToString (drop 1 m)
-  | otherwise = show(fst m) ++ "^" ++ show(snd m) ++ " " ++ literalsToString (drop 1 m)
+-- PRINT LITERALS FUNCTIONS
+literalsToString :: (Eq b, Num b,  Show b) => [(Char, b)] -> String
+literalsToString m
+ | (length m == 1 && snd (head m) /= 1) = [fst (head (m))]  ++ "^" ++ show (snd (head m) )
+ | length m == 1 && snd (head m) == 1 = [fst (head (m))]
+ | snd (head m) == 1 = show(fst (head m))  ++ literalsToString (drop 1 m)
+ | otherwise = [fst (head m)] ++ "^" ++ show(snd(head m)) ++ literalsToString (drop 1 m)
 
--- main = print $ show (fst (9, [('x', 1), ('y', 2)]))  ++   show (fst (head (snd (9, [('x', 1), ('y', 2)]))) )++ "^" ++ show (snd (head (snd (9, [('x', 1), ('y', 2)])) ) ) ++ " "
+----------------------------------------------------------------------------------
 
+-- CALLING FUNCTIONS
 
+-- print normalizar
+normalizar :: Poly -> String
+normalizar p = listToString (normalizePoly p)
 
-{-polyCleanUp :: Poly -> Poly
-polyCleanUp l
- | length l == 1 = l
- | fst (head l) == 0 = polyCleanUp (drop 1 l)
- | otherwise = polyCleanUp (l)
--}
---Se coef = 0, não se imprime
+-- print adicionar
+adicionar :: Poly -> Poly -> String
+adicionar p1 p2 = listToString (addPoly p1 p2)
 
-
-
-
-
-{-- type Board = [(Int, Int)]
- showTuples :: Board -> String
- showTuples [] = ""
- showTuples (x:[]) = show(fst(x)) ++ " " ++ show(snd(x))
- showTuples (x:xs) = show(fst(x)) ++ " " ++ show(snd(x)) ++ " " ++ showTuples xs
-
- main :: IO ()
- main = putStrLn . showTuples $ [(8, 7), (5, 6), (3, 3), (9, 4), (5, 4)] -- 8 7 5 6 3 3 9 4 5 4 --}
-
-{--
-myprint :: (Poly a, Show a) => Prelude.String -> Poly -> IO ()
-myprint funcName f n = do
-  putStrLn $ funcName ++ ": " ++ (show f n)
-
--- ++ " Polynomial = " ++ (show $ absoluteError approx)
-  --where approx = f n
-
-
-printComparison :: Int -> Int -> IO ()
-printComparison ver n = do
-  printAproximation "calcPi1" (calcPi1 ver) n
-  printAproximation "calcPi2" (calcPi2 ver) n
--}
+-- DERIVADA PRINT FUNCTION
+derivada :: Poly -> Char -> String
+derivada p c = listToString (polyDer p c)
