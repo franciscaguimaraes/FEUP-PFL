@@ -3,6 +3,13 @@
 type Mono = (Int, [(Char, Int)])
 type Poly = [Mono]
 
+-- TODO: no normalize xy é igual a yx
+
+
+
+
+
+
 ----------------------------------------------------------------------------------------------
 -- BASE FUNCTIONS TO REMOVE coeficientE NULL AND EXPOENTE NULL
 removeExpNull :: (Num b, Eq b) => [(a, b)] -> [(a, b)]
@@ -24,11 +31,12 @@ addMono :: Mono -> Mono -> Mono
 addMono m1 m2 = (fst m1 + fst m2, snd m1)
 
 -- ADDS MONO USING ABOVE FUNC, THIS FUNCTION ADDS MONOS WITH SAME LITERAL EXPRESSION
-addSame :: Mono -> Poly-> Poly
+addSame :: Mono -> Poly -> Poly
 addSame m [] = [m]
 addSame m (x:xs)
     | snd m == snd x = addMono m x:xs
     | otherwise = x:addSame m xs
+
 ----------------------------------------------------------------------------------------
 
 -- THIS FUNCTION NORMALIZES POLY USING ABOVE FUNC OF ONLY ADDING IF SAME
@@ -51,11 +59,47 @@ addPoly p1 p2
 
 ---------------------------------------------------------------------------------------
 
+-- multiplies same MONO literal AND increases literal (2, [('x',2), ('y',1)]) (2, [('x',2) ,('y',1)])
+mulMono :: Mono -> Mono -> Mono
+mulMono m1 m2 = (fst m1 * fst m2 , auxRec(snd m1))
+  where auxRec m1aux
+         | length m1aux == 1 = [( fst (head m1aux), snd (head m1aux) + snd (head m1aux))]
+         | otherwise = [(fst (head m1aux), snd (head m1aux) + snd (head m1aux))] ++ auxRec (drop 1 m1aux)
 
 
+mulOnlyCoef :: Mono -> Mono -> Mono
+mulOnlyCoef m1 m2 = (fst m1 * fst m2 , var) where var = if(snd m1 /= []) then snd m1 else snd m2
+
+isMember:: (Eq a)  => a -> [(a,b)] -> Bool
+isMember y [] = False
+isMember y (x:xs) =
+ if y == fst x then
+  True
+ else
+  isMember y xs
+
+calcLiterals :: (Eq a, Num b, Eq b) => [(a,b)] -> [(a,b)] -> [(a,b)]
+calcLiterals m1 m2 = lista ++ [ (h,i) | (h,i) <- m1, isMember h lista == False ] ++ [ (j,k) | (j,k) <- m2, isMember j lista == False ]
+  where lista = [ (a, b+d) | (a,b) <- m1, (c,d) <- m2, a == c ]
+
+mulExpression :: Mono -> Poly-> Poly
+mulExpression m [] = []
+mulExpression m (x:xs)
+    -- if only coef is multiplying
+    | (snd m == [] || snd x == [])= [mulOnlyCoef m x] ++ mulExpression m xs
+    -- if same literals
+    | (snd m == snd x)  = [mulMono m x] ++ mulExpression m xs
+    | snd m /= snd x = [(fst m * fst x, calcLiterals (snd m) (snd x) )] ++ mulExpression m xs
+    | otherwise = x:mulExpression m xs
 
 
+mulPoly :: Poly -> Poly -> Poly
+mulPoly p1 p2
+ | p1 == [] = []
+ | p2 == [] = []
+ | otherwise =  mulExpression (head p1) p2 ++ mulPoly (tail p1) p2
 
+-- mulPoly [ (2, [('y',1)]), (5, [('z', 1)]) ]  [ (1 , [('y',1)]) ]
 
 ---------------------------------------------------------------------------------------
 
@@ -76,28 +120,27 @@ monoDer m c
  | otherwise = (fst m * expoente , mylookup c (snd m)) where expoente = (snd (head (mylookup c (snd m))) ) + 1
 
 polyDer :: Poly -> Char -> Poly
-polyDer poly c =  map (\mono -> monoDer mono c) poly
+polyDer poly c = normalizePoly( map (\mono -> monoDer mono c) poly )
 
 --------------------------------------------------------------------------------------------
 
 -- LIST TO STRING PRINT FUNCTIONS
 listToString :: Poly -> String
 listToString p
- | length p == 1 = show(fst (head p) ) ++ literalsToString(snd (head p))
+ | length p == 1 = show(fst (head p) ) ++ "*" ++ literalsToString(snd (head p))
  | fst (head p) == 0 = "" ++ listToString (drop 1 p)
  | snd (head p) == [] = show(fst (head p)) ++ " " ++ "+" ++ " " ++ listToString (drop 1 p)
- | otherwise = show(fst (head p) ) ++ literalsToString(snd (head p)) ++ " " ++ "+" ++ " " ++ listToString (drop 1 p)
+ | otherwise = show(fst (head p) ) ++ "*" ++ literalsToString(snd (head p)) ++ " " ++ "+" ++ " " ++ listToString (drop 1 p)
 
 -- PRINT LITERALS FUNCTIONS
 literalsToString :: (Eq b, Num b,  Show b) => [(Char, b)] -> String
 literalsToString m
- | (length m == 1 && snd (head m) /= 1) = [fst (head (m))]  ++ "^" ++ show (snd (head m) )
+ | (length m == 1 && snd (head m) /= 1) = [fst (head (m))] ++ "^" ++ show (snd (head m) )
  | length m == 1 && snd (head m) == 1 = [fst (head (m))]
- | snd (head m) == 1 = show(fst (head m))  ++ literalsToString (drop 1 m)
+ | snd (head m) == 1 = [fst (head m)]  ++ literalsToString (drop 1 m)
  | otherwise = [fst (head m)] ++ "^" ++ show(snd(head m)) ++ literalsToString (drop 1 m)
 
 ----------------------------------------------------------------------------------
-
 -- CALLING FUNCTIONS
 
 -- print normalizar
@@ -107,6 +150,9 @@ normalizar p = listToString (normalizePoly p)
 -- print adicionar
 adicionar :: Poly -> Poly -> String
 adicionar p1 p2 = listToString (addPoly p1 p2)
+
+multiplicar :: Poly -> Poly -> String
+multiplicar p1 p2 = listToString (normalizePoly (mulPoly p1 p2) )
 
 -- DERIVADA PRINT FUNCTION
 derivada :: Poly -> Char -> String
