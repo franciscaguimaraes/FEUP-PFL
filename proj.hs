@@ -1,17 +1,13 @@
-{- ex: 2xy + 7 -> [(2, [(x, 1), (y,1)]), (7, [])]-}
--- [ (0 , [('x',2)] ) , (2, [('y',1)]) , (5, [('z', 1)]) , (1 , [('y',1)]) , (7 , [('y',2)]) ] -> (0*x^2 + 2*y + 5*z + y + 7*y^2)
+import Data.List
 type Mono = (Int, [(Char, Int)])
 type Poly = [Mono]
 
--- TODO: no normalize xy é igual a yx
-
-
-
-
-
+{- ex: 2xy + 7 -> [(2, [(x, 1), (y,1)]), (7, [])]-}
+-- [ (0 , [('x',2)] ) , (2, [('y',1)]) , (5, [('z', 1)]) , (1 , [('y',1)]) , (7 , [('y',2)]) ] -> (0x^2 + 2*y + 5*z , y, -7y^2)
 
 ----------------------------------------------------------------------------------------------
 -- BASE FUNCTIONS TO REMOVE coeficientE NULL AND EXPOENTE NULL
+
 removeExpNull :: (Num b, Eq b) => [(a, b)] -> [(a, b)]
 removeExpNull [] = []
 removeExpNull ((x,y):xs)
@@ -24,11 +20,30 @@ removeCoefNull [] = []
 removeCoefNull ((0, x:xs ):xss) = removeCoefNull xss
 removeCoefNull ((a,[]):xs) = (a,[]):removeCoefNull xs
 removeCoefNull ((a,(b, c):xs):xss) = (a, removeExpNull ((b,c):xs) ): removeCoefNull xss
+
+isMember:: (Eq a)  => a -> [(a,b)] -> Bool
+isMember y [] = False
+isMember y (x:xs) =
+ if y == fst x then
+  True
+ else
+  isMember y xs
+
+calcLiterals :: (Eq a, Num b, Eq b) => [(a,b)] -> [(a,b)] -> [(a,b)]
+calcLiterals m1 m2 = lista ++ [ (h,i) | (h,i) <- m1, isMember h lista == False ] ++ [ (j,k) | (j,k) <- m2, isMember j lista == False ]
+  where lista = [ (a, b+d) | (a,b) <- m1, (c,d) <- m2, a == c ]
+
+-- sorts literals alphabetically
+expressionCleanUp :: Poly -> Poly
+expressionCleanUp [] = []
+expressionCleanUp p = removeCoefNull [ (fst (head p), sort ( calcLiterals ( take 1 literal) (tail literal) ) ) ] ++ expressionCleanUp (tail p)
+      where literal = snd (head p)
+
 ----------------------------------------------------------------------------------------------
 
 -- ADDS MONO AND KEEPS SAME LITERAL
 addMono :: Mono -> Mono -> Mono
-addMono m1 m2 = (fst m1 + fst m2, snd m1)
+addMono m1 m2 = (fst m1 + fst m2, sort (snd m1) )
 
 -- ADDS MONO USING ABOVE FUNC, THIS FUNCTION ADDS MONOS WITH SAME LITERAL EXPRESSION
 addSame :: Mono -> Poly -> Poly
@@ -39,14 +54,15 @@ addSame m (x:xs)
 
 ----------------------------------------------------------------------------------------
 
--- THIS FUNCTION NORMALIZES POLY USING ABOVE FUNC OF ONLY ADDING IF SAME
+-- THIS FUNCTION NORMALIZES POLY USING ABOVE FUNC OF ONLY ADDING IF SAME. CLEANING NULL COEFS AND NULL EXPON
+
 normalizePoly :: Poly -> Poly
 normalizePoly p
  | null p = []
- | otherwise = normalizeFunc (removeCoefNull p)
- where normalizeFunc xs
-        | null xs = []
-        | otherwise = addSame (head xs) (normalizeFunc (tail xs))
+ | otherwise = normalizeFunc ( expressionCleanUp p )
+ where normalizeFunc p
+        | null p = []
+        | otherwise = addSame (head p) (normalizeFunc (tail p))
 
 ----------------------------------------------------------------------------------------
 
@@ -70,17 +86,8 @@ mulMono m1 m2 = (fst m1 * fst m2 , auxRec(snd m1))
 mulOnlyCoef :: Mono -> Mono -> Mono
 mulOnlyCoef m1 m2 = (fst m1 * fst m2 , var) where var = if(snd m1 /= []) then snd m1 else snd m2
 
-isMember:: (Eq a)  => a -> [(a,b)] -> Bool
-isMember y [] = False
-isMember y (x:xs) =
- if y == fst x then
-  True
- else
-  isMember y xs
 
-calcLiterals :: (Eq a, Num b, Eq b) => [(a,b)] -> [(a,b)] -> [(a,b)]
-calcLiterals m1 m2 = lista ++ [ (h,i) | (h,i) <- m1, isMember h lista == False ] ++ [ (j,k) | (j,k) <- m2, isMember j lista == False ]
-  where lista = [ (a, b+d) | (a,b) <- m1, (c,d) <- m2, a == c ]
+
 
 mulExpression :: Mono -> Poly-> Poly
 mulExpression m [] = []
@@ -106,31 +113,30 @@ mulPoly p1 p2
 -- DERIVADA FUNCTIONS
 mylookup :: (Eq a, Num b, Ord b) => a -> [(a,b)] -> [(a,b)]
 mylookup _ [] =  []
-mylookup key ((x,y) : xys)
-  | y == 0 = [] ++ mylookup key xys
-  | (length ((x,y) : xys) == 1 && key /= x) = []
-  | key == x  =  if (y > 1) then  ( ( x, (y-1) ) : xys) else (xys)
-  | otherwise =  mylookup key xys
+mylookup c ((x,y) : xys)
+  | (length ((x,y) : xys) == 1 && c /= x) = []
+  | c == x  =  if (y > 1) then  ( ( x, (y-1) ) : mylookup c xys) else ( mylookup c xys )
+  | otherwise =  mylookup c xys
 
-monoDer :: (Int, [(Char, Int)]) -> Char -> (Int, [(Char, Int)])
+-- TODO: derivada wrong
+monoDer :: Mono -> Char -> Mono
 monoDer m c
- | fst m == 0 = (0, [])
- | snd m == [] = (0, [])
  | mylookup c (snd m) == [] = (0, [])
- | otherwise = (fst m * expoente , mylookup c (snd m)) where expoente = (snd (head (mylookup c (snd m))) ) + 1
+ | otherwise = (fst m * expoente , mylookup c (sort(snd m)))
+                      where expoente = (snd (head (mylookup c (snd m))) ) + 1
 
 polyDer :: Poly -> Char -> Poly
-polyDer poly c = normalizePoly( map (\mono -> monoDer mono c) poly )
+polyDer poly c = map (\mono -> monoDer mono c) poly
 
 --------------------------------------------------------------------------------------------
-
 -- LIST TO STRING PRINT FUNCTIONS
 listToString :: Poly -> String
 listToString p
- | length p == 1 = show(fst (head p) ) ++ "*" ++ literalsToString(snd (head p))
- | fst (head p) == 0 = "" ++ listToString (drop 1 p)
- | snd (head p) == [] = show(fst (head p)) ++ " " ++ "+" ++ " " ++ listToString (drop 1 p)
- | otherwise = show(fst (head p) ) ++ "*" ++ literalsToString(snd (head p)) ++ " " ++ "+" ++ " " ++ listToString (drop 1 p)
+ | length p == 1  && snd (head p) /= [] = show(fst (head p) ) ++ literalsToString(snd (head p))
+ | snd (head p) == [] && (length p == 1) = show(fst (head p))
+ | snd (head p) == [] && (length p /= 1) = show(fst (head p)) ++ " " ++ "+" ++ " " ++ listToString (drop 1 p)
+ | otherwise = show(fst (head p) ) ++ literalsToString(snd (head p)) ++ " " ++ "+" ++ " " ++ listToString (drop 1 p)
+
 
 -- PRINT LITERALS FUNCTIONS
 literalsToString :: (Eq b, Num b,  Show b) => [(Char, b)] -> String
@@ -152,8 +158,8 @@ adicionar :: Poly -> Poly -> String
 adicionar p1 p2 = listToString (addPoly p1 p2)
 
 multiplicar :: Poly -> Poly -> String
-multiplicar p1 p2 = listToString (normalizePoly (mulPoly p1 p2) )
+multiplicar p1 p2 = listToString (normalizePoly (mulPoly (normalizePoly(p1)) (normalizePoly (p2)) ) )
 
 -- DERIVADA PRINT FUNCTION
 derivada :: Poly -> Char -> String
-derivada p c = listToString (polyDer p c)
+derivada p c = listToString  ( normalizePoly (polyDer (normalizePoly (p)) c ))
