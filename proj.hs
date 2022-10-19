@@ -176,4 +176,49 @@ printDerivative :: Poly -> Char -> String
 printDerivative p c = printListToString  ( normalizePoly (derPoly (normalizePoly (p)) c ))
 
 
---------------------------
+------------------------
+
+--converter a parte literal para o formato de lista
+stringToLiterals :: String -> [(Char, Int)]
+stringToLiterals [] = []
+stringToLiterals (x:xs)
+  | x > '9' && xs == [] = [(x,1)]
+  | x > '9' && (head xs) == '^' = [(x, read (takeWhile (<= '9') (drop 1 xs)) :: Int)] ++ stringToLiterals (dropWhile (<= '9') (drop 1 xs))
+  | x > '9' && ((head xs) > '9') = [(x,1)] ++ stringToLiterals xs
+
+-- conveter um mono em string para o formato Mono
+stringToMono :: String -> Mono
+stringToMono l = (read (takeWhile (<= '9') l) :: Int, stringToLiterals (dropWhile (<= '9') l))
+
+--limpar a lista de monomios para tirar os +, - e vazios
+listOfPoly :: [String] -> [String]
+listOfPoly x
+  | x == [] = []
+  | head x == "" = listOfPoly (drop 1 x)
+  | head x == "+" = listOfPoly (drop 1 x)
+  | head x == "-" = ["-" ++ head (tail x)] ++ listOfPoly (drop 1 (tail x))
+  | otherwise = [head x] ++ listOfPoly (tail x)
+
+--recebendo uma lista resultante de words
+splitOperators :: [String] -> [String]
+splitOperators (x:xs)
+  | length (x:xs) == 1 = split (oneOf "-+") x
+  | otherwise = split (oneOf "-+") x ++ splitOperators xs
+
+
+process :: Int -> IO ()
+process opt
+  | opt == 1 = putStrLn $ "aaaaaa"
+
+menu :: IO ()
+menu = do
+  putStrLn $ "MENU"
+  putStrLn $ "1 to normalize polynomial"
+  putStrLn $ "2 to add polynomials"
+  putStrLn $ "3 to multiply polynomials"
+  putStrLn $ "4 to calcular derivada de polinomio"
+  input <- getLine
+  let option = read input :: Int
+  if (option > 4 || option < 1) then
+    menu
+  else

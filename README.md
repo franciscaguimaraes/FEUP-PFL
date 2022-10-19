@@ -15,3 +15,5 @@ O ficheiro README.pdf deverá conter:
 * Uma descrição (e justificação) da escolha de representação interna de polinómios;
 * Uma breve descrição da estratégia de implementação de cada funcionalidade;
 * Exemplos de utilização que permitam testar todas as funcionalidades do programa.
+
+----fazer cabal install split pra dps fzr o import data.list.split
