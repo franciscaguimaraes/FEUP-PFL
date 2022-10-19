@@ -66,6 +66,8 @@ addSameMono m (x:xs)
 
 -- THIS FUNCTION NORMALIZES POLY USING ABOVE FUNC OF ONLY ADDING IF SAME. CLEANING NULL COEFS AND NULL EXPON
 
+
+
 normalizePoly :: Poly -> Poly
 normalizePoly p
  | p == [] = []
@@ -73,6 +75,10 @@ normalizePoly p
  where auxFunc p
         | p == [] = []
         | otherwise = addSameMono (head p) (auxFunc (tail p))
+      {--  where sortFinal p
+                | p == [] = []
+                | otherwise = sortOn snd (snd p)
+--}
 
 ----------------------------------------------------------------------------------------
 
@@ -129,7 +135,7 @@ mylookup c ((x,y) : xys)
 
 derMono :: Mono -> Char -> Mono
 derMono m c
- -- if dont find... normalizes covers those cases
+-- if dont find at all... null ex: 2y 'x' -> 0 || 2 'x' -> 0
  | mylookup c (snd m) == [] = (0, [])
  | otherwise = (fst m * expoente , mylookup c (sort(snd m)))
                       where expoente = (snd (head (mylookup c (snd m))) ) + 1
@@ -222,3 +228,4 @@ menu = do
   if (option > 4 || option < 1) then
     menu
   else
+    process option
