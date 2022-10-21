@@ -1,12 +1,33 @@
 import Test.QuickCheck ( (==>), withMaxSuccess, quickCheck, Property )
-import Proj (removeExpNull, removeCoefNull, isMemberOf, calcLiterals, expressionCleanUp, addMono, addSameMono, normalizePoly, addPoly,mulMono, mulOnlyCoef, mulExpression,mulPoly,mylookup,derMono, derPoly)
+import Data.List
+import Proj (removeExpNull, isMemberOf, calcLiterals, expressionCleanUp, addMono, addSameMono, normalizePoly, addPoly,mulMono, mulOnlyCoef, mulExpression,mulPoly,mylookup,derMono, derPoly)
 
 type Mono = (Int, [(Char, Int)])
 type Poly = [Mono]
 
-testExpressionCleanUp :: Poly -> Bool
-testExpressionCleanUp p = p == expressionCleanUp(p)
 
+hasSameElements :: (Eq a) => [a] -> [a] -> Bool
+hasSameElements x y = null (x \\ y) && null (y \\ x)
+
+-- =====================================================
+
+testAddAssociativity :: Poly -> Poly -> Bool
+testAddAssociativity p1 p2 = hasSameElements (addPoly p1 p2) (addPoly p2 p1)
+
+testAddNullElem :: Poly -> Bool
+testAddNullElem p1 = hasSameElements (addPoly (normalizePoly p1) [(0,[])]) (normalizePoly p1)
+
+testMulAssociativity :: Poly -> Poly -> Bool
+testMulAssociativity p1 p2 = hasSameElements (normalizePoly ( mulPoly (normalizePoly p1) (normalizePoly p2 ) ) ) ( normalizePoly ( mulPoly (normalizePoly p2)  (normalizePoly p1 ) ) )
+
+testMulNullElem :: Poly -> Bool
+testMulNullElem p1 = hasSameElements (normalizePoly (mulPoly p1 [(1,[])])) (normalizePoly p1)
+
+testDerivativeNullElem :: Poly -> Bool
+testDerivativeNullElem p1 = hasSameElements (normalizePoly (derPoly ( p1 ++ [(5,[])]) 'x') ) (normalizePoly (derPoly p1 'x'))
+
+testDerivativeAdd :: Poly -> Poly -> Bool
+testDerivativeAdd p1 p2 = hasSameElements (normalizePoly (derPoly (addPoly (normalizePoly p1) (normalizePoly p2)) 'x') ) ( normalizePoly (addPoly (derPoly (normalizePoly p1) 'x') (derPoly (normalizePoly p2) 'x')))
 
 -- Alguns exemplos
 -- normalizePoly [(3,[]),(2,[('x',3)])]
@@ -21,14 +42,23 @@ testExpressionCleanUp p = p == expressionCleanUp(p)
 -- printMultiply ([ (4, [('x', 1)]) ]) (mulPoly [ (4,[('x',1)]) , (-2, []) ] [ (1,[('x',2)]), (-3,[])] )
 -- printMultiply [ (1, [('x', 2)]), (2,[('x',1)]) , (-1, []) ] [ (2,[('x',2)]), (-3,[('x',1)]), (6,[]) ]
 
---main :: IO ()
---main = do
+{- ex: 2xy + 7 -> [(2, [(x, 1), (y,1)]), (7, [])]-}
+-- [ (0 , [('x',2)] ) , (2, [('y',1)]) , (5, [('z', 1)]) , (1 , [('y',1)]) , (7 , [('y',2)]) ] -> (0x^2 + 2*y + 5*z , y, -7y^2)
 
---if not (testAddPoly 100 1) then putStrLn "Specific add test 1 failed" else putStr ""
+main :: IO ()
+main = do
 
 
     -- Property testing
-  --  quickCheck (withMaxSuccess 100 testAddPoly)
+      quickCheck (withMaxSuccess 50 testAddAssociativity)
+      quickCheck (withMaxSuccess 50 testAddNullElem)
+      quickCheck (withMaxSuccess 50 testMulAssociativity) --mt lento mesmooo
+      quickCheck (withMaxSuccess 50 testMulNullElem) --mt lento
+      quickCheck (withMaxSuccess 50 testDerivativeNullElem)
+      quickCheck (withMaxSuccess 50 testDerivativeAdd)
+
+      -- problems with calcLiterals!!!
+
 
     -- Specific tests
     {--
