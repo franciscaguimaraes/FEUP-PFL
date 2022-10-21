@@ -1,5 +1,5 @@
 module Proj
-  ( removeExpNull, isMemberOf, calcMultiplyLiterals, expressionCleanUp, addMono, addSameMono, normalizePoly, addPoly ,mulMono, mulOnlyCoef, mulExpression, mulPoly, mylookup, derMono, derPoly, printNormalize, printAdd, printMultiply, printDerivative
+  ( removeExpNull, isMemberOf, calcMultiplyLiterals, expressionCleanUp, addMono, addSameMono, normalizePoly, addPoly ,mulMono, mulOnlyCoef, mulExpression, mulPoly, mylookup, derMono, derPoly, printNormalize, printAdd, printMultiply, printDerivative, sP
   ) where
 
 import Data.List
@@ -44,7 +44,7 @@ expressionCleanUp p
  | otherwise = [(fst (head p), [] )] ++ expressionCleanUp (tail p)
 
 -- ============================================================================
--- AUXILIAR FUNCTIONS TO ADDITION AND NORMALIZATION OF POLYNOMIALS
+-- AUXILIAR FUNCTIONS TO ADDITION AND add null element OF POLYNOMIALS
 
 -- This functions adds coeficients and keeps their literal part (used to add monomials with same literals)
 addMono :: Mono -> Mono -> Mono
@@ -191,26 +191,6 @@ printLiteralsToString m
  | snd (head m) == 1 = [fst (head m)]  ++ printLiteralsToString (drop 1 m)
  | otherwise = [fst (head m)] ++ "^" ++ show(snd(head m)) ++ printLiteralsToString (drop 1 m)
 
- -- ============================================================================
--- FUNCTIONS TO PRINT ON THE SCREEN THE RESULTANT POLYNOMIAL CONVERTED TO STRING
-
--- print Normalize
-printNormalize :: Poly -> String
-printNormalize p = printListToString (normalizePoly p)
-
--- print Add
-printAdd :: Poly -> Poly -> String
-printAdd p1 p2 = printListToString (normalizePoly (addPoly (p1) (p2) ) )
-
--- print Multiply
-printMultiply :: Poly -> Poly -> String
-printMultiply p1 p2 = printListToString (normalizePoly (mulPoly (normalizePoly(p1)) (normalizePoly (p2)) ) )
-
--- print Derivative
-printDerivative :: Poly -> Char -> String
-printDerivative p c = printListToString  ( normalizePoly (derPoly (normalizePoly (p)) c ))
-
-
 -- ============================================================================
 -- FUNCTIONS TO TAKE STRING AS INPUT AND CONVERT TO POLYNOMIAL TYPE
 
@@ -242,6 +222,7 @@ splitOperators  (x:xs)
   | otherwise = split (oneOf "-+") x ++ splitOperators xs
 
 -- TODO fix this recursion
+
 -- This function converts string into list of chars split into monomials
 getListOfPoly :: String -> [String]
 getListOfPoly "" = []
@@ -253,13 +234,41 @@ auxStringParser [] = []
 auxStringParser s = [stringToMono( head s)] ++ auxStringParser (tail s)
 
 -- This function converts string into polynomial
-stringParser :: String -> Poly
-stringParser [] = []
-stringParser s = auxStringParser (getListOfPoly s)
+sP :: String -> Poly
+sP [] = []
+sP s = auxStringParser (getListOfPoly s)
+
+-- ============================================================================
+-- FUNCTIONS TO PRINT ON THE SCREEN THE RESULTANT POLYNOMIAL CONVERTED TO STRING
+
+-- This function coverts into string a polynomial expression and prints it
+printP :: Poly -> String
+printP p = printListToString (normalizePoly (p))
+
+-- ============================================================================
+-- BASE FUNCTIONS TAKING AS INPUT STRINGS
+
+-- print Normalize
+printNormalize :: String -> String
+printNormalize p = printListToString (normalizePoly (sP p) )
+
+-- print Add
+printAdd :: String -> String -> String
+printAdd p1 p2 = printListToString (normalizePoly (addPoly (sP  p1) (sP p2) ) )
+
+-- print Multiply
+printMultiply :: String -> String -> String
+printMultiply p1 p2 = printListToString (normalizePoly (mulPoly (normalizePoly(sP  p1)) (normalizePoly (sP  p2)) ) )
+
+-- print Derivative
+printDerivative :: String -> Char -> String
+printDerivative p c = printListToString  ( normalizePoly (derPoly (normalizePoly (sP  p)) c ))
 
 -- ============================================================================
 -- MENU
 
+
+-- TODO : do this MENU!!!
 -- This function outputs instructions on how to use our program
 process :: Int -> IO ()
 process opt
