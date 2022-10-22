@@ -4,7 +4,7 @@
 
 Neste projeto foi nos proposto a execução de um programa que consiga manipular simbolicamente polinómios.
 
-Para corrê-lo é necessário instalar as seguintes bibliotecas:
+Para corrê-lo é anecessário instalar as seguintes bibliotecas:
 
 ```
 * QuickCheck
@@ -39,9 +39,9 @@ Exemplo:
 
 ### Justificação
 
-A estrutura que escolhemos para a representação interna de polinómios foi uma das sugeridas pelo professor durante uma aula teórica.
+A estrutura que escolhemos para a representação interna de polinómios foi uma das sugeridas pelo professor durante uma aula teórica. 
 
-Foi a estrutura que nos pareceu mais organizada e intuitiva, o que nos permitiu iniciar o desenvolvimento do projeto sem grandes dificuldades visto termos constatado ser relativamente simples a manipulação de polinómios utilizando esta estratégia.
+Foi a estrutura que nos pareceu mais organizada e intuitiva, o que nos permitiu iniciar o desenvolvimento do projeto sem grandes dificuldades visto termos constatado ser relativamente simples a manipulação de polinómios utilizando esta estratégia. 
 
 ---
 
@@ -127,19 +127,20 @@ No fim, obtém-se uma lista de monómios, isto é, um polinómio, para fazer a o
 menu :: IO ()
 ```
 
-Para auxiliar o utilizador, foi criado um menu de instruções para esclarecer como realizar as operações de normalização, adição, multiplicação e derivação.
+Para auxiliar o utilizador, foi criado um menu de instruções para esclarecer como realizar as operações base de normalização, adição, multiplicação e derivação.
 
-
-![](https://i.imgur.com/S2tT9sb.png)
-
+![](https://i.imgur.com/m6lMSs2.png)
 *Fig.3: Exemplo de como receber instruções para normalização*
 
 ### Output
-
 ```
 printP:: Poly -> String
+printNormalize :: String -> String
+printAdd :: String -> String -> String
+printMultiply :: String -> String -> String
+printDerivative :: String -> Char -> String
 ```
-Nesta função retornamos o nosso output representado por uma String com auxilio da função `printListToString` que percorre o polinómio e o converte em string.
+Nas funções descritas em cima retornamos o nosso output representado por uma String com auxilio da função `printListToString` que percorre o polinómio e o converte em string. 
 
 Para imprimirmos o polinómio dado tivemos em atenção alguns aspetos:
 
