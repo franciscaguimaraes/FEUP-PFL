@@ -286,7 +286,7 @@ menu = do
   putStrLn $ "4 for instructions to calculate one polynomial derivative"
   input <- getLine
   let option = read input :: Int
-  putStrLn $ "A poly must be a string and not have the multiplication symbol *"
+  putStrLn $ "A poly must be a string (Write: sP poly) and not have the multiplication symbol *"
   if (option > 4 || option < 1) then
     menu
   else
