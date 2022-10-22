@@ -1,12 +1,10 @@
 module Proj
-  ( removeExpNull, isMemberOf, calcMultiplyLiterals, expressionCleanUp, addMono, addSameMono, normalizePoly, addPoly ,mulMono, mulOnlyCoef, mulExpression, mulPoly, mylookup, derMono, derPoly, printNormalize, printAdd, printMultiply, printDerivative, sP
-  ) where
+  ( normalizePoly, addPoly , mulPoly,  derPoly, printP, sP) where
 
 import Data.List
 import Data.List.Split
 type Mono = (Int, [(Char, Int)])
 type Poly = [Mono]
-
 
 -- ============================================================================
 -- BASE FUNCTIONS TO CLEAN UP POLYNOMIAL EXPRESSION
@@ -30,7 +28,7 @@ calcMonoLiterals :: (Eq a, Num b, Eq b) =>[(a,b)] -> [(a,b)]
 calcMonoLiterals [] = []
 calcMonoLiterals m = [ (fst(head m) , addExp (filter (\x -> (fst (head m)) == (fst x)) m))] ++ calcMonoLiterals (filter (\x -> (fst (head m)) /= (fst x)) m)
 
--- this function cleans polynomial expression by removing null coeficients, exponents and literal duplicates
+-- This function cleans polynomial expression by removing null coeficients, exponents and literal duplicates
 expressionCleanUp :: Poly -> Poly
 expressionCleanUp [] = []
 expressionCleanUp p
@@ -143,31 +141,36 @@ mulPoly p1 p2
 -- FUNCTION AND AUXILIARY FUNCTIONS TO DERIVATE ONE POLYOMIAL EXPRESSION
 -- SPECIFYING THE VARIABLE WITH RESPECT TO WHICH TO DERIVATE
 
--- This function looks up char variable in literal list and if it finds, decrements exponent
-mylookup :: (Eq a, Num b, Ord b) => a -> [(a,b)] -> [(a,b)]
+-- This function looks up char variable in literal list and if finds, decrements exponent
+mylookup :: (Eq a,  Num b, Ord b) => a -> [(a,b)] -> [(a,b)]
 mylookup _ [] =  []
-mylookup c ((x,y) : xys)
-  -- if only one element to verify and not the var we are looking for...
-  | (length ((x,y) : xys) == 1 && c /= x) = []
-  -- if found, decrement exponent and keep going
-  | c == x  =  (( x, (y-1)) : mylookup c xys)
-  | otherwise =  mylookup c xys
+mylookup c l
+  | (filter (\x -> (c) == (fst x)) l) == [] = []
+  | otherwise =  auxMylookup c l
+  where auxMylookup c l
+          | (length l == 1 && c /= fst (head l)) = [head l]
+          | (length l == 1 && c == fst (head l)) = [(fst (head l), snd(head l) - 1)]
+          | c == fst (head l)  =  [(fst (head l), snd(head l) - 1)] ++ auxMylookup c (tail l)
+          | otherwise = [head l] ++ auxMylookup (c) (tail l)
+
+-- This function takes as input a variable char and the literal part of a mono.
+--             We look for the variable in the list and if found we increment the exponent (to multiply with coeficient)
+myexponent :: (Eq a, Num b) => a -> [(a,b)] -> b
+myexponent _ [] = 0
+myexponent c m
+ | length m == 1 && fst (head m) /= c = 0
+ | length m == 1 && fst (head m) == c = snd(head m) + 1
+ | fst(head m) == c = snd (head m) + 1 + myexponent c (tail m)
+ | otherwise = myexponent c (tail m)
 
 -- This function takes one monomial and one char variable to look within monomial literals list and decrease exponent if found char variable
 -- or return (0, []) if not found
 derMono :: Mono -> Char -> Mono
-derMono m c
-  -- if mylookup doesn't find char variable at all, return (0,[])
- | mylookup c (snd m) == [] = (0, [])
- -- mylookup returns a list of one literal because for each monomial there won't be repitable chars
- --      (ex: 2xyx won't happen because normalizing will result in 2x^2y and deriving with 'x' will get a list of literals as [('x',1)])
- --           because of this, myexponent is the exponent of the resulting list +1
- | otherwise = (fst m * myexponent , mylookup c (sort(snd m)))
-                      where myexponent = (snd (head (mylookup c (snd m))) ) + 1
+derMono m c = (fst m * myexponent c (mylookup c (sort(snd m))),  mylookup c (sort(snd m)))
 
 -- This function takes a polynomial expression and one char variable and applies monomial derivative to each element
 derPoly :: Poly -> Char -> Poly
-derPoly poly c = map (\mono -> derMono mono c) poly
+derPoly poly c = normalizePoly (map (\mono -> derMono mono c) poly)
 
 -- ============================================================================
 -- FUNCTIONS TO PRINT POLYNOMIAL
@@ -221,8 +224,6 @@ splitOperators  (x:xs)
   | length (x:xs) == 1 = split (oneOf "-+") x
   | otherwise = split (oneOf "-+") x ++ splitOperators xs
 
--- TODO fix this recursion
-
 -- This function converts string into list of chars split into monomials
 getListOfPoly :: String -> [String]
 getListOfPoly "" = []
@@ -266,7 +267,6 @@ printDerivative p c = printListToString  ( normalizePoly (derPoly (normalizePoly
 
 -- ============================================================================
 -- MENU
-
 
 -- This function outputs instructions on how to use our program
 process :: Int -> IO ()

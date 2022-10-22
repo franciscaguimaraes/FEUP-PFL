@@ -1,8 +1,8 @@
-# PFL_TP1_G05_10
+# PFL_TP1_G10_05
 
 ### Unidade Curricular: Programação Funcional e Lógica (PFL)
 
-Para este projeto foi nos proposto a execução de um programa que consiga manipular simbólicamente polinómios.
+Neste projeto foi nos proposto a execução de um programa que consiga manipular simbólicamente polinómios.
 
 Para corre-lo é necessário instalar as seguintes bibliotecas:
 
@@ -32,6 +32,7 @@ type Poly = [Mono] --lista de monómios
 
 Exemplo:
 ![](https://i.imgur.com/WZ3Hov0.png)
+*Fig.1: Exemplo de Estrutura Interna de um Monómio*
 
 
 ### Justificação
@@ -81,6 +82,7 @@ Na função `mulPoly` recebemos dois polinómios e retornamos um polinómio.
 Analisamos este problema por partes. Para multiplicarmos os polinómios de forma distributiva, analisamos primeiro a multiplicação do primeiro monómio do primeiro polinómio (p1) com o segundo polinómio (p2), em seguida, a multiplicação do segundo monómio de p1 com p2, e por aí em diante.
 
 ![](https://i.imgur.com/bbePtoF.png)
+*Fig.2: Exemplificação da Propriedade Distriutiva na Multiplicação de Polinómios*
 
 
 Para isso verificamos se:
@@ -94,31 +96,54 @@ Para isso verificamos se:
 ```
 derPoly :: Poly -> Char -> Poly
 ```
-Na função `derPoly` recebemos um polinómio e um char, que representa a ordem a que vamos derivar o polinómio e retornamos um polinómio.
+Na função `derPoly` recebemos um polinómio e um char, que representa a ordem a que vamos derivar o polinómio, e retornamos um polinómio.
 
-Se encontrarmos na parte literal como variável o Char de input, multiplicamos o coeficiente com o expoente da parte literal e em seguida decrementamo-lo.
+Começamos por percorrer os monómios do polinómio (`mylookup`) com o objetivo de encontrar na parte literal do monómio a variável cuja ordem queremos derivar (fornecida pelo utilizador).
+Se encontrarmos a variável, decrementamos o seu expoente, obtendo no final uma lista da parte literal com os expoentes das variáveis decrementados de forma correta.
+Por último, percorremos a lista resultante (`myexponent`) e multiplicamos o coeficiente com o expoente associado a essa variável incrementado novamente (para conseguirmos obter o expoente na sua forma original).
 
-Aplicamos esta lógica a todos os monómios do polinómio.
-
-### Output
-
-```
-printP:: Poly -> String
-
-```
-Nesta função retornamos o nosso output representado por uma String com auxilio da função `printListToString` que percorre o polinómio e o converte em string.
-
-Nesta função, antes de a converter para string, chamamos a função `normalizePoly` mais uma vez para verificar se o polinómio resultante está simplificado e retornamo-lo.
+Esta lógica é aplicada a todos os monómios do polinómio obtendo como resultado um polinómio derivado.
 
 ### Input
 ```
 sP :: String -> Poly
 ```
-Como desafio, foi nos proposto a possibilidade de input como uma string tranformando-a na nossa representação interna.
+Como desafio, foi nos proposto a possibilidade de input como uma String tranformando-a na nossa representação interna.
 
 Na função `sP` convertemos a String recebida em polinómio para podermos utilizar o polinómio resultante nas funções que o nosso programa oferece.
 
-passos para chegar lá??? bruna
+Primeiro, a string original do polinómio é separada pelos espaços (através da função `words`) e pelos operadores `+` e `-` (através da função criada `splitOperators`) e assim, é convertida em uma lista de String.
+De seguida, a função `listOfPoly` percorre a nova lista retirando os espaços vazios e o operador `+`, e concatenando o operador `-` com o respetivo monómio.
+Por último, chama-se `stringToMono` para cada elemento da lista para converter em monómio. Esta função separa o coeficiente da parte literal. A parte literal é convertida para o formato `[(Char, Int)]` pela função `stringToLiterals`.
+
+No fim, obtém-se uma lista de monómios, isto é, um polinómio, para fazer a operação pedida pelo utilizador.
+
+### MENU
+
+```
+menu :: IO ()
+```
+
+Para auxiliar o utilizador, foi criado um menu de instruções para esclarecer como realizar as operações de normalização, adição, multiplicação e derivação.
+
+
+![](https://i.imgur.com/S2tT9sb.png)
+*Fig.3: Exemplo de como receber instruções para normalização*
+
+### Output
+
+```
+printP:: Poly -> String
+```
+Nesta função retornamos o nosso output representado por uma String com auxilio da função `printListToString` que percorre o polinómio e o converte em string.
+
+Para imprimirmos o polinómio dado tivemos em atenção alguns aspetos:
+
+* Se for um monómio cujo coeficiente é 0, não o imprimimos;
+* Se for um monómio cuja parte literal é nula, só imprimimos o coeficiente;
+* Se se trata de um monómio com coeficiente e parte literal não nula, imprimimos o coeficiente e de seguida a parte literal com auxilio de `printLiteralsToString` que, por sua vez, tem em consideração o valor do expoente da variável e apenas o imprime se for superior a 1.
+
+Para além do mencionado, antes de converter o poninómio para string, chamamos novamente a função `normalizePoly` para verificar se o polinómio resultante se encontra o mais simplificado possível.
 
 
 ---
@@ -132,24 +157,24 @@ Testámos as nossas funções com dois tipos de testes:
 
 Estes testes estão no ficheiro `Test.hs` e podem ser verificados carregando o ficheiro `:l Test.hs` e correndo a função `main`.
 
-![](https://i.imgur.com/hPSDEtb.png)
-*Fig.1: Testes*
+![](https://i.imgur.com/fhkrTBq.png)
+*Fig.4: Testes*
 
 ![](https://i.imgur.com/lggvVEc.png)
-*Fig.2: Testes de Propriedade usando QuickCheck*
+*Fig.5: Testes de Propriedade usando QuickCheck*
 
-foto
-*Fig.3: Testes Especificos*
+![](https://i.imgur.com/8kf9IKW.png)
+*Fig.6: Alguns dos Testes Especificos Implementados*
 
 ![](https://i.imgur.com/TgHazeL.png)
-*Fig.4: Resultado dos Testes*
+*Fig.7: Resultado dos Testes*
 
 
 
 ---
 
 ## Autoras:
-| Nome                | Up       | Group
+| Nome                | Up       | Grupo
 | --------            | -------- | -----
-| Bruna Marques       | 202007191| G05_10
-| Francisca Guimarães | 202004229| G05_10
+| Bruna Marques       | 202007191| G10_05
+| Francisca Guimarães | 202004229| G10_05
