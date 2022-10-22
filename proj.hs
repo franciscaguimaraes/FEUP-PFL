@@ -268,25 +268,25 @@ printDerivative p c = printListToString  ( normalizePoly (derPoly (normalizePoly
 -- MENU
 
 
--- TODO : do this MENU!!!
 -- This function outputs instructions on how to use our program
 process :: Int -> IO ()
 process opt
-  | opt == 1 = putStrLn $ "To normalize one polynomial "
-  | opt == 2 = putStrLn $ "To add two polynomials"
-  | opt == 3 = putStrLn $ "To multiply two polynomials"
-  | opt == 4 = putStrLn $ "To calculate one polynomial derivative "
+  | opt == 1 = putStrLn $ "Write: printNormalize poly"
+  | opt == 2 = putStrLn $ "Write: printAdd poly poly"
+  | opt == 3 = putStrLn $ "Write: printMultiply poly poly"
+  | opt == 4 = putStrLn $ "Write: printDerivative poly"
 
 -- This functions outputs a menu
 menu :: IO ()
 menu = do
   putStrLn $ "MENU"
-  putStrLn $ "1 to normalize polynomial"
-  putStrLn $ "2 to add polynomials"
-  putStrLn $ "3 to multiply polynomials"
-  putStrLn $ "4 to calculate one polynomial derivative"
+  putStrLn $ "1 for instructions to normalize polynomial"
+  putStrLn $ "2 for instructions to add polynomials"
+  putStrLn $ "3 for instructions to multiply polynomials"
+  putStrLn $ "4 for instructions to calculate one polynomial derivative"
   input <- getLine
   let option = read input :: Int
+  putStrLn $ "A poly must be a string and not have the multiplication symbol *"
   if (option > 4 || option < 1) then
     menu
   else
