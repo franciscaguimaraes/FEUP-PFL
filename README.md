@@ -2,9 +2,9 @@
 
 ### Unidade Curricular: Programação Funcional e Lógica (PFL)
 
-Neste projeto foi nos proposto a execução de um programa que consiga manipular simbólicamente polinómios.
+Neste projeto foi nos proposto a execução de um programa que consiga manipular simbolicamente polinómios.
 
-Para corre-lo é necessário instalar as seguintes bibliotecas:
+Para corrê-lo é necessário instalar as seguintes bibliotecas:
 
 ```
 * QuickCheck
@@ -22,8 +22,9 @@ Para corre-lo é necessário instalar as seguintes bibliotecas:
 
 ### Estrutura
 
-Para este projeto, decidimos escolher como representação interna de polinómios uma lista de túpulos. Um monómio representa um túpulo dessa lista.
-O primeiro elemento do túpulo representa o coeficiente e o segundo elemento, uma lista de túpulos (a parte literal), que por sua vez, apresenta como primeiro elemento a variável e como segundo elemento o seu expoente.
+Para este projeto, decidimos escolher como representação interna de polinómios uma lista de tuplos. Um monómio representa um tuplo dessa lista.
+O primeiro elemento do tuplo representa o coeficiente e o segundo elemento, uma lista de tuplos (a parte literal), que por sua vez, apresenta como primeiro elemento a variável e como segundo elemento o seu expoente.
+
 
 ```
 type Mono = (Int, [(Char, Int)]) --(2, ['x',2]) = 2x^2
@@ -38,9 +39,9 @@ Exemplo:
 
 ### Justificação
 
-Decidimos utilizar para representação do polinómio a lista de túpulos porque conseguimos nos pareceu a mais fácil lol
+A estrutura que escolhemos para a representação interna de polinómios foi uma das sugeridas pelo professor durante uma aula teórica.
 
-
+Foi a estrutura que nos pareceu mais organizada e intuitiva, o que nos permitiu iniciar o desenvolvimento do projeto sem grandes dificuldades visto termos constatado ser relativamente simples a manipulação de polinómios utilizando esta estratégia.
 
 ---
 
@@ -59,7 +60,7 @@ Primeiro, verificamos se o polinómio tem as condições necessárias para ser n
 
 * Retiramos todos os monómios que contenham como coeficiente o 0;
 * Se algum dos literais tiver como expoente o 0, removemos esse literal do monómio;
-* Se algum monómio tiver algum literal repetido, i.e `2xx`, simplificamo-lo `2x^2`.
+* Se algum monómio tiver algum literal repetido, i.e. `2xx`, simplificamo-lo `2x^2`.
 
 De seguida, percorremos o polinómio e verificamos se encontramos monómios com a mesma parte literal. Se sim, adicionamos os seus coeficientes e retornamos o monómio, e, por sua vez, o polinómio simplificado.
 
@@ -84,7 +85,7 @@ Analisamos este problema por partes. Para multiplicarmos os polinómios de forma
 
 ![](https://i.imgur.com/bbePtoF.png)
 
-*Fig.2: Exemplificação da Propriedade Distriutiva na Multiplicação de Polinómios*
+*Fig.2: Exemplificação da Propriedade Distributiva na Multiplicação de Polinómios*
 
 
 Para isso verificamos se:
@@ -110,7 +111,7 @@ Esta lógica é aplicada a todos os monómios do polinómio obtendo como resulta
 ```
 sP :: String -> Poly
 ```
-Como desafio, foi nos proposto a possibilidade de input como uma String tranformando-a na nossa representação interna.
+Como desafio, foi nos proposto a possibilidade de input como uma String transformando-a na nossa representação interna.
 
 Na função `sP` convertemos a String recebida em polinómio para podermos utilizar o polinómio resultante nas funções que o nosso programa oferece.
 
@@ -144,9 +145,9 @@ Para imprimirmos o polinómio dado tivemos em atenção alguns aspetos:
 
 * Se for um monómio cujo coeficiente é 0, não o imprimimos;
 * Se for um monómio cuja parte literal é nula, só imprimimos o coeficiente;
-* Se se trata de um monómio com coeficiente e parte literal não nula, imprimimos o coeficiente e de seguida a parte literal com auxilio de `printLiteralsToString` que, por sua vez, tem em consideração o valor do expoente da variável e apenas o imprime se for superior a 1.
+* Se se trata de um monómio com coeficiente e parte literal não nula, imprimimos o coeficiente e de seguida a parte literal com auxílio de `printLiteralsToString` que, por sua vez, tem em consideração o valor do expoente da variável e apenas o imprime se for superior a 1.
 
-Para além do mencionado, antes de converter o poninómio para string, chamamos novamente a função `normalizePoly` para verificar se o polinómio resultante se encontra o mais simplificado possível.
+Para além do mencionado, antes de converter o polinómio para string, chamamos novamente a função `normalizePoly` para verificar se o polinómio resultante se encontra o mais simplificado possível.
 
 
 ---
@@ -167,7 +168,7 @@ Estes testes estão no ficheiro `Test.hs` e podem ser verificados carregando o f
 *Fig.5: Testes de Propriedade usando QuickCheck*
 
 ![](https://i.imgur.com/8kf9IKW.png)
-*Fig.6: Alguns dos Testes Especificos Implementados*
+*Fig.6: Alguns dos Testes Específicos Implementados*
 
 ![](https://i.imgur.com/TgHazeL.png)
 
