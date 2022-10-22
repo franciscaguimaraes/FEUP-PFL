@@ -32,6 +32,7 @@ type Poly = [Mono] --lista de monómios
 
 Exemplo:
 ![](https://i.imgur.com/WZ3Hov0.png)
+
 *Fig.1: Exemplo de Estrutura Interna de um Monómio*
 
 
@@ -82,6 +83,7 @@ Na função `mulPoly` recebemos dois polinómios e retornamos um polinómio.
 Analisamos este problema por partes. Para multiplicarmos os polinómios de forma distributiva, analisamos primeiro a multiplicação do primeiro monómio do primeiro polinómio (p1) com o segundo polinómio (p2), em seguida, a multiplicação do segundo monómio de p1 com p2, e por aí em diante.
 
 ![](https://i.imgur.com/bbePtoF.png)
+
 *Fig.2: Exemplificação da Propriedade Distriutiva na Multiplicação de Polinómios*
 
 
@@ -128,6 +130,7 @@ Para auxiliar o utilizador, foi criado um menu de instruções para esclarecer c
 
 
 ![](https://i.imgur.com/S2tT9sb.png)
+
 *Fig.3: Exemplo de como receber instruções para normalização*
 
 ### Output
@@ -167,6 +170,7 @@ Estes testes estão no ficheiro `Test.hs` e podem ser verificados carregando o f
 *Fig.6: Alguns dos Testes Especificos Implementados*
 
 ![](https://i.imgur.com/TgHazeL.png)
+
 *Fig.7: Resultado dos Testes*
 
 
