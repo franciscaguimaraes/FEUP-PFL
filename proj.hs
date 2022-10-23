@@ -274,7 +274,7 @@ process opt
   | opt == 1 = putStrLn $ "Write: printNormalize poly"
   | opt == 2 = putStrLn $ "Write: printAdd poly poly"
   | opt == 3 = putStrLn $ "Write: printMultiply poly poly"
-  | opt == 4 = putStrLn $ "Write: printDerivative poly"
+  | opt == 4 = putStrLn $ "Write: printDerivative poly variable \nVariable to derivate must be a char. Ex: 'x'"
 
 -- This functions outputs a menu
 menu :: IO ()
@@ -286,7 +286,7 @@ menu = do
   putStrLn $ "4 for instructions to calculate one polynomial derivative"
   input <- getLine
   let option = read input :: Int
-  putStrLn $ "A poly must be a string (Write: sP poly) and not have the multiplication symbol *"
+  putStrLn $ "A poly must be a string and not have the multiplication symbol *"
   if (option > 4 || option < 1) then
     menu
   else
