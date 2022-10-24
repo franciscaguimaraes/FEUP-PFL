@@ -178,6 +178,7 @@ derPoly poly c = normalizePoly (map (\mono -> derMono mono c) poly)
 -- This function takes a polynomial expression and prints a string
 printListToString :: Poly -> String
 printListToString p
+ | p == [] =[]
  | fst (head p) == 0 && length p /= 1 = printListToString (drop 1 p)
  | fst (head p) == 0 && length p == 1 = ""
  | length p == 1  && snd (head p) /= [] = show(fst (head p) ) ++ printLiteralsToString(snd (head p))
@@ -259,7 +260,7 @@ printAdd p1 p2 = printListToString (normalizePoly (addPoly (sP  p1) (sP p2) ) )
 
 -- print Multiply
 printMultiply :: String -> String -> String
-printMultiply p1 p2 = printListToString (normalizePoly (mulPoly (normalizePoly(sP  p1)) (normalizePoly (sP  p2)) ) )
+printMultiply p1 p2 = printListToString (normalizePoly (mulPoly (sP  p1) (sP  p2)) ) 
 
 -- print Derivative
 printDerivative :: String -> Char -> String
