@@ -1,3 +1,15 @@
+board(1, [[0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0]]).
+board(2, [[0,0,0,0,0,0,0], [0,0,0,0,0,0,0], [0,0,0,0,0,0,0], [0,0,0,0,0,0,0], [0,0,0,0,0,0,0], [0,0,0,0,0,0,0], [0,0,0,0,0,0,0]]).
+
+% option_dif(+Code, -Difficulty)
+% Gives the Difficulty associated with the code provided as an option
+difficulty(1, 'Easy').
+difficulty(2, 'Normal').
+
+mode(1, 'PP').
+mode(2, 'PC').
+mode(3, 'CC').
+
 % play/0
 % main predicate for game start, presents the main menu
 play :-
@@ -6,11 +18,12 @@ play :-
 
 % start_game(+GameState, +Player1Type, +Player2Type)
 % starts a game with Player1Type vs Player2Type
-start_game(GameState, Player1Type, Player2Type):-
+startGame(Difficulty, Size, Mode):-
   clear, 
-  display_game(GameState),
-  turn(GameState, Player1Type, 'Player 1', Player2Type ).
-
+  board(Size, GameState),
+  display_game(GameState).
+/*   turn(GameState, Player1Type, 'Player 1', Player2Type ).
+ */
 % turn(+GameState, +Player, +PlayerS, +NextPlayer)
 % Turn predicate for final game state where player removes a piece instead of moving it
 turn(GameState, Player, PlayerS, NextPlayer):-

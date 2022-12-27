@@ -1,21 +1,6 @@
-% option_dif(+Code, -Difficulty)
-% Gives the Difficulty associated with the code provided as an option
-option_dif(1, 'Easy').
-option_dif(2, 'Normal').
-
-mode(1, 'PP').
-mode(2, 'PC').
-mode(3, 'CC').
-
-board(1, '5x5').
-board(2, '7x7').
-
 % clear/0
 % Clears the screen, for better user experience (UX)
 clear :- write('\33\[2J').
-
-backMainMenu(0) :-
-  mainMenu. 
 
 mainMenu :-
   printMenu,
@@ -26,20 +11,30 @@ manageOption(0) :-
   write('\nExiting...\n\n').
 manageOption(Number) :-
   clear,
-  mode(Number, Mode),
+  boardMenu(Number).
+
+boardMenu(Mode) :-
   printBoardMenu,
   askMenuOption(0, 2, Size),
   manageBoardOption(Size, Mode).
-
+ 
 manageBoardOption(0, _) :-
+  clear,
   mainMenu. 
 manageBoardOption(Size, Mode) :-
   clear,
+  difficultyMenu(Size, Mode).
+
+difficultyMenu(Size, Mode) :-
   printDifficultyMenu,
-  askMenuOption(0, 2, Number),
-  backMainMenu(Number),
-  option_dif(Number, Difficulty),
-  startGame(Mode, Size, Difficulty).
+  askMenuOption(0, 2, Difficulty),
+  manageDifficultyOption(Difficulty, Size, Mode).
+
+manageDifficultyOption(0, _, Mode) :-
+  clear,
+  boardMenu(Mode).
+manageDifficultyOption(Difficulty, Size, Mode) :-
+  startGame(Difficulty, Size, Mode).
 
 printMenu :-
 write(' _______________________________________________________________________ \n'),
@@ -95,12 +90,12 @@ write('|                 *   * *   * *   *  * *   *   *  *   **                |
 write('|                 *   * *   *  ***   *  *   ***   *    *                |\n'),
 write('|               -----------------------------------------               |\n'),
 write('|                                                                       |\n'),
-write('|                         Choose a Board Size                           |\n'),
+write('|                       Choose a Difficulty Level                       |\n'),
 write('|                                                                       |\n'),
 write('|                       1. Easy                                         |\n'),
 write('|                                                                       |\n'),
 write('|                       2. Normal                                       |\n'),
 write('|                                                                       |\n'),
-write('|                       0. Go Back to Main Menu                         |\n'),
+write('|                       0. Go Back to Board Menu                        |\n'),
 write('|                                                                       |\n'),
 write('|_______________________________________________________________________|\n').
