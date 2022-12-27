@@ -1,5 +1,4 @@
- :- use_module(library(lists)).
- initial(1, [
+initial(1, [
   [ 1, 0, 1, 0, 1,-1],
   [-1, 1,-1, 0,-1, 1],
   [ 1,-1, 1,-1, 1,-1],
@@ -60,7 +59,6 @@ print_header(X):-
   print_header_numbers(1, X),
   write('---'),
   print_separator(X).
-
 
 print_matrix([L|T], N, X):-
     write(' '), row(N,R), write(R), write(' | '), % letra da linha

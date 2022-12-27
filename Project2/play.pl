@@ -1,11 +1,15 @@
+% board(+Code, -Board)
+% Gives the Board associated with the code provided as an option
 board(1, [[0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0]]).
 board(2, [[0,0,0,0,0,0,0], [0,0,0,0,0,0,0], [0,0,0,0,0,0,0], [0,0,0,0,0,0,0], [0,0,0,0,0,0,0], [0,0,0,0,0,0,0], [0,0,0,0,0,0,0]]).
 
-% option_dif(+Code, -Difficulty)
+% difficulty(+Code, -Difficulty)
 % Gives the Difficulty associated with the code provided as an option
 difficulty(1, 'Easy').
 difficulty(2, 'Normal').
 
+% mode(+Code, -Mode)
+% Gives the Mode associated with the code provided as an option
 mode(1, 'PP').
 mode(2, 'PC').
 mode(3, 'CC').
@@ -21,9 +25,12 @@ play :-
 startGame(Difficulty, Size, Mode):-
   clear, 
   board(Size, GameState),
-  display_game(GameState).
-/*   turn(GameState, Player1Type, 'Player 1', Player2Type ).
- */
+  display_game(GameState),
+
+  turn(GameState, Player1Type, 'Player 1', Player2Type ).
+
+
+
 % turn(+GameState, +Player, +PlayerS, +NextPlayer)
 % Turn predicate for final game state where player removes a piece instead of moving it
 turn(GameState, Player, PlayerS, NextPlayer):-
@@ -33,6 +40,7 @@ turn(GameState, Player, PlayerS, NextPlayer):-
   remove(Player, GameState, PlayerS, NewGameState),
   game_over(NewGameState, PlayerS, TempResult),
   process_result(NewGameState, TempResult, Player, NextPlayer, PlayerS).
+
 % Turn predicate for moving a piece
 turn(GameState, Player, PlayerS, NextPlayer):-
   make_move(Player, GameState, PlayerS, NewGameState),
@@ -43,7 +51,7 @@ turn(GameState, Player, PlayerS, NextPlayer):-
 % Processes the Winner argument, if there are no winners then it's the opponent's turn
 process_result(NewGameState, 'none', TypePlayer, TypeToPlay, PlayerS):-
   clear, 
-  display_game(NewGameState),
+  display_game(NewGameState), 
   opposed_opponent_string(PlayerS, EnemyS),
   turn(NewGameState, TypeToPlay, EnemyS, TypePlayer).
 % If there's a winner, the game ends
@@ -75,20 +83,3 @@ check_win('Player 2', GameState, X):-
 check_win('Player 1', GameState, Size):-
   value(GameState, 'Player 1', Value),
   Value == Size.
-
-% does one floodfill and doesn't repeat on redo
-attemp_flood_fill(Board, X, Y, NewBoard):-
-  size_of_board(Board, Size),
-  floodFill(Board, Size, X, Y, 0, 9, NewBoard), !.
-% prolog implementation of the floodFill algorithm
-floodFill(Board, BoardSize, X, Y, PrevCode, NewCode, FinalBoard):-
-  X >= 0, X < BoardSize, Y >= 0, Y < BoardSize,
-  value_in_board(Board, X, Y, PrevCode),
-  replace(Board, X, Y, NewCode, BoardResult), % replaces PrevCode by NewCode
-  X1 is X+1, X2 is X-1, Y1 is Y+1, Y2 is Y-1,
-  floodFill(BoardResult, BoardSize, X1, Y, PrevCode, NewCode, T1) ,
-  floodFill(T1, BoardSize, X2, Y, PrevCode, NewCode, T2) ,
-  floodFill(T2, BoardSize, X, Y1, PrevCode, NewCode, T3) ,  
-  floodFill(T3, BoardSize, X, Y2, PrevCode, NewCode, FinalBoard).
-% if initial floodfill returns from every direction, returns the initial board
-floodFill(Board, _, _, _, _, _, Board).
