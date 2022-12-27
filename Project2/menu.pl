@@ -1,3 +1,7 @@
+% clear/0
+% Clears the screen, for better user experience (UX)
+clear :- write('\33\[2J').
+
 menu :-
 write(' _______________________________________________________________________ \n'),
 write('|                                                                       |\n'), 

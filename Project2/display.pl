@@ -1,14 +1,24 @@
+ :- use_module(library(lists)).
  initial(1, [
   [ 1, 0, 1, 0, 1,-1],
-  [-1, 1,-1, 1,-1, 1],
+  [-1, 1,-1, 0,-1, 1],
   [ 1,-1, 1,-1, 1,-1],
-  [-1, 1,-1, 1,-1, 1],
-  [ 1,-1, 1,-1, 1,-1],
+  [-1, 1,-1, 0,-1, 1],
+  [ 1,-1, 1, 0, 1,-1],
   [-1, 1,-1, 1,-1, 1]
 ]).
 
+
 print_cell(cell(_, _, emptyCell)) :-
   write('  ').
+
+% size_of_board(+Board, -X)
+% returns in X the size of the Square Board. Does not accept Rectangular Boards
+size_of_board(Board, X):-
+  nth0(0, Board, Header),
+  length(Header, X),
+  length(Board, Y),
+  X == Y. % check if board is nxn and not nxm
 
 code(0, 32).   % ascii code for space
 code(1, 215).  % × - Player 1
@@ -53,7 +63,7 @@ print_header(X):-
 
 
 print_matrix([L|T], N, X):-
-    row(N,R), write('\n '), write(R), write(' | '), % letra da linha
+    write(' '), row(N,R), write(R), write(' | '), % letra da linha
     N1 is N + 1,
     print_line(L), nl,
     write('---'), print_separator(X),
@@ -66,6 +76,8 @@ print_line([C|L]):-
   code(C, P),put_code(P), write(' | '),
   print_line(L).
 
-display_game([L|T], N, X):-
+display_game(Board):-
+  nl,
+  size_of_board(Board, X),
   print_header(X),
-  print_matrix([L|T], N, X).
+  print_matrix(Board, 0, X).
