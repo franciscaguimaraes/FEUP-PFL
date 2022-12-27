@@ -1,3 +1,14 @@
+code_number(48, 0).
+code_number(49, 1).
+code_number(50, 2).
+code_number(51, 3).
+code_number(52, 4).
+code_number(53, 5).
+code_number(54, 6).
+code_number(55, 7).
+code_number(56, 8).
+code_number(57, 9).
+
 
 % read_inputs(+Size, -X, -Y)
 % Reads a Column and Row according to Size (of Board)
@@ -24,4 +35,17 @@ read_row(Row, Size) :-
   format('| Row (A-~s) -    ', Letter),
   get_char(Row).
 
+% askMenuOption(+LowerBound, +UpperBound, -Number)
+% used in menus to read inputs between the Lower and Upper Bounds
+askMenuOption(LowerBound, UpperBound, Number):-
+  format('| Choose an Option (~d-~d) - ', [LowerBound, UpperBound]),
+  get_code(NumberASCII),
+  peek_char(Char),
+  Char == '\n',
+  code_number(NumberASCII, Number),
+  Number =< UpperBound, Number >= LowerBound, skip_line.
 
+askMenuOption(LowerBound, UpperBound, Number):-
+  write('Not a valid number, try again\n'), skip_line,
+  askMenuOption(LowerBound, UpperBound, Number).
+ 
