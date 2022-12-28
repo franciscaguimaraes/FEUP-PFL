@@ -70,9 +70,13 @@ askMenuOption(LowerBound, UpperBound, Number):-
   peek_char(Char),
   Char == '\n',
   code_number(NumberASCII, Number),
-  Number =< UpperBound, Number >= LowerBound, skip_line.
+  write(Number),
+  write(UpperBound),
+  write(LowerBound),
+  Number =< UpperBound, Number >= LowerBound, write('hi'), skip_line.
 
 askMenuOption(LowerBound, UpperBound, Number):-
   write('Not a valid number, try again\n'), skip_line,
   askMenuOption(LowerBound, UpperBound, Number).
+ 
  

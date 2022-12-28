@@ -1,26 +1,42 @@
 :-use_module(library(lists)).
-% value_in_board(+Board, +X, +Y, -Value)
-% returns in Value the value [0,1,-1] at (X,Y) from Board
 
-bla(0, Acc, Acc).
-bla(-1, Acc, Acc1):-
+% choose_piece(+Board, +PlayerS, -Xtemp, -Ytemp, -Directions)
+% predicate to read input, checks if piece belongs to player, gets available directions and return
+choose_piece(Board, PlayerS, X, Y, Directions):-
+    size_of_board(Board, Size),
+    read_inputs(Size, Xread, Yread).
+
+% checks if list os available directions is empty, in that case, calls choose_piece again
+check_list(Board, PlayerS, _, _, [], Directions, XFinal, YFinal):-
+    format('~`xt No plays available for that piece ~`xt~57|~n', []),
+    format('~`*t Chose Another Piece ~`*t~57|~n', []),
+    skip_line,
+    choose_piece(Board, PlayerS, XFinal, YFinal, Directions).
+% if List is not empty
+check_list(_,_,X,Y,List,List,X,Y):-
+    format('~`-t There are plays available for that spot ~`-t~57|~n', []).
+
+accumulator(0, Acc, Acc).
+accumulator(-1, Acc, Acc1):-
     Acc1 is Acc-1.
-bla(1, Acc, Acc1):-
+accumulator(1, Acc, Acc1):-
     Acc1 is Acc+1.
 
+% value_in_board(+Board, +X, +Y, -Value)
+% returns in Value the value [0,1,-1] at (X,Y) from Board 
 value_in_board(Board, X, Y, Value):-
     nth0(X, Board, Row),
     nth0(Y, Row, Value).
 
 check_possible(Board, X, Y, Count):-
     count_adjacentA(Board, X, Y, Value),
-    bla(Value, Count, Count1),
+    accumulator(Value, Count, Count1),
     count_adjacentB(Board, X, Y, Value1),
-    bla(Value1, Count1, Count2),
+    accumulator(Value1, Count1, Count2),
     count_adjacentL(Board, X, Y, Value2),
-    bla(Value2, Count2, Count3),
+    accumulator(Value2, Count2, Count3),
     count_adjacentR(Board, X, Y, Value3),
-    bla(Value3, Count3, Count4),
+    accumulator(Value3, Count3, Count4),
     Count4 =:= 0,
     write('well well').
 
