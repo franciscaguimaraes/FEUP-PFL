@@ -9,9 +9,12 @@ mainMenu :-
 
 manageOption(0) :-      
   write('\nExiting...\n\n').
-manageOption(Number) :-
+manageOption(2) :- 
   clear,
-  playerMenu(Number).
+  playerMenu(2).
+manageOption(_) :-
+  clear,
+  boardMenu(0, _).
 
 playerMenu(Mode) :-
   printPlayerMenu,
@@ -33,6 +36,9 @@ boardMenu(Player, Mode) :-
 manageBoardOption(0, _, Mode) :-
   clear,
   playerMenu(Mode).
+manageBoardOption(Size, Player, 1) :-
+  clear,
+  startGame(0, Size, Player, Mode).
 manageBoardOption(Size, Player, Mode) :-
   clear,
   difficultyMenu(Size, Player, Mode).
@@ -88,7 +94,7 @@ printPlayerMenu :-
   write('|                                                                       |\n'),
   write('|                       2. o - Player 2                                 |\n'),
   write('|                                                                       |\n'),
-  write('|                       0. Go Back to Main Menu                         |\n'),
+  write('|                       0. Go Back                                      |\n'),
   write('|                                                                       |\n'),
   write('|_______________________________________________________________________|\n').
 
@@ -109,7 +115,7 @@ write('|                       1. 5x5                                          |
 write('|                                                                       |\n'),
 write('|                       2. 7x7                                          |\n'),
 write('|                                                                       |\n'),
-write('|                       0. Go Back to Player Menu                       |\n'),
+write('|                       0. Go Back                                      |\n'),
 write('|                                                                       |\n'),
 write('|_______________________________________________________________________|\n').
 
@@ -130,6 +136,6 @@ write('|                       1. Easy (Random)                                |
 write('|                                                                       |\n'),
 write('|                       2. Normal (Greedy)                              |\n'),
 write('|                                                                       |\n'),
-write('|                       0. Go Back to Board Menu                        |\n'),
+write('|                       0. Go Back                                      |\n'),
 write('|                                                                       |\n'),
 write('|_______________________________________________________________________|\n').
