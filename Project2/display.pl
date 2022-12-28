@@ -8,9 +8,6 @@ initial(1, [
 ]).
 
 
-print_cell(cell(_, _, emptyCell)) :-
-  write('  ').
-
 % size_of_board(+Board, -X)
 % returns in X the size of the Square Board. Does not accept Rectangular Boards
 size_of_board(Board, X):-
@@ -56,7 +53,7 @@ print_header_numbers(Initial, Final):-
 
 print_header(X):-
   write('   |'),
-  print_header_numbers(1, X),
+  print_header_numbers(0, X),
   write('---'),
   print_separator(X).
 
@@ -75,7 +72,7 @@ print_line([C|L]):-
   print_line(L).
 
 display_game(Board):-
-  nl,
+  clear,
   size_of_board(Board, X),
   print_header(X),
   print_matrix(Board, 0, X).
