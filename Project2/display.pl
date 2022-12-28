@@ -73,7 +73,8 @@ print_header_numbers(Initial, Final):-
 
 print_header(X):-
   write('   |'),
-  print_header_numbers(0, X),
+  X1 is X -1, 
+  print_header_numbers(0, X1),
   write('---'),
   print_separator(X).
 
