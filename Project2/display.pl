@@ -7,6 +7,26 @@ initial(1, [
   [-1, 1,-1, 1,-1, 1]
 ]).
 
+% board(+Code, -Board)
+% Gives the Board associated with the code provided as an option
+
+board(1, [
+  [0, 0, 0, 0, 0], 
+  [0, 0, 0, 0, 0], 
+  [0, 0, 0, 0, 0], 
+  [0, 0, 0, 0, 0], 
+  [0, 0, 0, 0, 0]
+]).
+
+board(2, [
+  [0, 0, 0, 0, 0, 0, 0], 
+  [0, 0, 0, 0, 0, 0, 0], 
+  [0, 0, 0, 0, 0, 0, 0], 
+  [0, 0, 0, 0, 0, 0, 0], 
+  [0, 0, 0, 0, 0, 0, 0], 
+  [0, 0, 0, 0, 0, 0, 0], 
+  [0, 0, 0, 0, 0, 0, 0]
+]).
 
 % size_of_board(+Board, -X)
 % returns in X the size of the Square Board. Does not accept Rectangular Boards

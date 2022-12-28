@@ -1,8 +1,3 @@
-% board(+Code, -Board)
-% Gives the Board associated with the code provided as an option
-board(1, [[0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0]]).
-board(2, [[0,0,0,0,0,0,0], [0,0,0,0,0,0,0], [0,0,0,0,0,0,0], [0,0,0,0,0,0,0], [0,0,0,0,0,0,0], [0,0,0,0,0,0,0], [0,0,0,0,0,0,0]]).
-
 % difficulty(+Code, -Difficulty)
 % Gives the Difficulty associated with the code provided as an option
 difficulty(1, 'Easy').
@@ -22,14 +17,12 @@ play :-
 
 % start_game(+GameState, +Player1Type, +Player2Type)
 % starts a game with Player1Type vs Player2Type
-startGame(Difficulty, Size, Mode):-
+startGame(Difficulty, Size, Player, Mode):-
   clear, 
   board(Size, GameState),
-  display_game(GameState),
+  display_game(GameState).
 
-  turn(GameState, Player1Type, 'Player 1', Player2Type ).
-
-
+% turn(GameState, Player1Type, 'Player 1', Player2Type ).
 
 % turn(+GameState, +Player, +PlayerS, +NextPlayer)
 % Turn predicate for final game state where player removes a piece instead of moving it

@@ -7,6 +7,26 @@ counter(1, Acc, Acc1):-
 
 % value_in_board(+Board, +X, +Y, -Value)
 % returns in Value the value [0,1,-1] at (X,Y) from Board
+:-use_module(library(lists)).
+
+% choose_piece(+Board, +PlayerS, -Xtemp, -Ytemp, -Directions)
+% predicate to read input, checks if piece belongs to player, gets available directions and return
+choose_piece(Board, PlayerS, X, Y, Directions):-
+    size_of_board(Board, Size),
+    read_inputs(Size, Xread, Yread).
+
+% checks if list os available directions is empty, in that case, calls choose_piece again
+check_list(Board, PlayerS, _, _, [], Directions, XFinal, YFinal):-
+    format('~`xt No plays available for that piece ~`xt~57|~n', []),
+    format('~`*t Chose Another Piece ~`*t~57|~n', []),
+    skip_line,
+    choose_piece(Board, PlayerS, XFinal, YFinal, Directions).
+% if List is not empty
+check_list(_,_,X,Y,List,List,X,Y):-
+    format('~`-t There are plays available for that spot ~`-t~57|~n', []).
+
+% value_in_board(+Board, +X, +Y, -Value)
+% returns in Value the value [0,1,-1] at (X,Y) from Board 
 value_in_board(Board, X, Y, Value):-
     nth0(X, Board, Row),
     nth0(Y, Row, Value).
