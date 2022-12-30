@@ -4,10 +4,67 @@ clear :- write('\33\[2J').
 
 % mainMenu/0
 % Prints the mainMenu and asks for user input to game mode
-mainMenu :-
+main_menu :-
   printMenu,
   askMenuOption(0, 3, Number),
   manageOption(Number).
+
+menu_board_size(Size) :- 
+  printBoardMenu,
+  askMenuOption(0, 2, Size).
+
+menu_player_choose(Player) :- 
+  printPlayerMenu,
+  askMenuOption(0, 2, Player).
+
+menu_difficulty_choose(Difficulty) :- 
+  printDifficultyMenu,
+  askMenuOption(0, 2, Difficulty).
+
+
+manage_option(0) :-
+  write('\nThank you for Playing! Exiting...\n\n').
+
+manage_option(1) :-
+  asserta(player(1, 'Player')),
+  asserta(player(2, 'Player')),
+  menu_board_size(Size),
+  clear, start_game_pp(Size), clear.
+
+manage_option(2) :-
+  menu_board_size(Size),
+  clear, menu_pc(Size), clear.
+
+manage_option(3) :-
+  menu_board_size(Size),
+  clear, menu_cc(Size), clear.
+
+start_game_pp (0) :-
+  main_menu.
+
+start_game_pp (Number) :-
+  option_size(Option, Size),
+    initial_state(Size,0),
+    asserta(turn(-1)),
+    game_loop,
+    start_game_pp (Number)
+
+menu_pc(0) :-
+  main_menu.
+
+menu_choose_player(1) :-
+  menu_choose_player(Player),
+  menu_choose_difficulty
+
+
+
+
+
+
+
+
+
+
 
 % manageOption(Number)
 % Given option chosen by user in mainMenu, takes action by exiting or entering playerMenu/boardMenu

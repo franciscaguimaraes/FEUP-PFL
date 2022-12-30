@@ -97,3 +97,15 @@ display_game(Board):-
   size_of_board(Board, X),
   print_header(X),
   print_matrix(Board, 0, X).
+
+win_message(Player):-
+  player_turn(Player, PlayerNumber),
+  format( '~n~`*t~57|~n', []),
+  format( '*~t Player ~d Won!~t*~57|~n', [PlayerNumber]),
+  format( '~`*t~57|~n', []),
+  sleep(2).
+
+computer_move(Row, Col, Player):-
+  player_turn(Player, PlayerNumber),
+  row(Row, Letter),
+  format( '*~t Computer ~d Put a Piece in Tale ~dx~a!~t*~57|~n', [PlayerNumber, Col, Letter]).
