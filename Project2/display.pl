@@ -1,11 +1,3 @@
-initial(1, [
-  [ 1, 0, 1, 0, 1,-1],
-  [-1, 1,-1, 0,-1, 1],
-  [ 1,-1, 1,-1, 1,-1],
-  [-1, 1,-1, 0,-1, 1],
-  [ 1,-1, 1, 0, 1,-1],
-  [-1, 1,-1, 1,-1, 1]
-]).
 
 % board(+Code, -Board)
 % Gives the Board associated with the code provided as an option
@@ -38,10 +30,12 @@ size_of_board(Board, X):-
 
 code(0, 32).   % ascii code for space
 code(1, 215).  % × - Player 1
-code(-1, 216). % Ø - Player 2
+code(2, 216). % Ø - Player 2
 
 player_piece('Player 1', 1).
-player_piece('Player 2', -1).
+player_piece('Player 2', 2).
+player_piece('Computer 1', 1).
+player_piece('Computer 2', 2).
 
 % Codes for board rows
 row(0, 'A').
@@ -73,7 +67,8 @@ print_header_numbers(Initial, Final):-
 
 print_header(X):-
   write('   |'),
-  print_header_numbers(0, X),
+  X1 is X - 1,
+  print_header_numbers(0, X1),
   write('---'),
   print_separator(X).
 
@@ -91,7 +86,7 @@ print_line([C|L]):-
   code(C, P),put_code(P), write(' | '),
   print_line(L).
 
-display_game(Board):-
+display_board(Board):-
   clear,
   size_of_board(Board, X),
   print_header(X),
