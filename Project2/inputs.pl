@@ -9,58 +9,78 @@ code_number(55, 7).
 code_number(56, 8).
 code_number(57, 9).
 
+% Letter to index ratio
+letter_number('A',0).
+letter_number('B',1).
+letter_number('C',2).
+letter_number('D',3).
+letter_number('E',4).
+letter_number('F',5).
+letter_number('G',6).
+letter_number('a',0).
+letter_number('b',1).
+letter_number('c',2).
+letter_number('d',3).
+letter_number('e',4).
+letter_number('f',5).
+letter_number('g',6).
+
 % read_inputs(+Size, -X, -Y)
 % Reads a Column and Row according to Size (of Board)
 read_inputs(Size, X, Y):-
-  read_column(Column, Size),
-  check_column(Column, X, Size),
-  format(': Column read :  ~d\n', X),
-  read_row(Row, Size),
-  check_row(Row, Y, Size),
-  format(': Row read :     ~w\n', Y).
+  read_column(Size, CCode),
+  check_column(Size, CCode, X), %Column
+  read_row(Size, RCode), 
+  check_row(Size, RCode, Y). %Row
 
 % read_column(-Column, +Size)
 % predicate to read column from user
-read_column(Column, Size) :-
+read_column(Size, CCode) :-
   format('| Column (0-~d) - ', Size-1),
-  get_code(Column).
+  get_code(CCode).
 
 % check_column(+Testing, -CheckedColumn, +Size)
 % Checks if input is a valid column
-check_column(Testing, Number, Size) :-
+check_column(Size, CCode, Y) :-
   peek_char(Char),
   Char == '\n',
-  code_number(Testing, Number),
-  Number < Size, Number >= 0, skip_line.
+  code_number(CCode, Y),
+  Y < Size, Y >= 0, 
+  format(': Column read :  ~d\n', Y),
+  skip_line.
 
 % if not between 0-x then try again
-check_column(_, CheckedColumn, Size) :-
+check_column(Size, _, Y) :-
   write('~ Invalid column\n| Select again\n'),
   skip_line,
-  read_column(Column, Size),
-  check_column(Column, CheckedColumn, Size).
+  read_column(Size, CCode),
+  check_column(Size, CCode, Y).
 
 % read_row(-Row, +Size)
 % predicate to read row from user
-read_row(Row, Size) :-
-  Size1 is Size-1,
-  row(Size1, Letter),
+read_row(Size, Rcode) :-
+  SNumber is Size - 1,
+  letter_number(Letter, SNumber),
   format('| Row (A-~s) -    ', Letter),
-  get_char(Row).
+  get_char(RCode).
 
 % check_row(+Rowread, -CheckedRow, +Size)
 % checking rows
-check_row(Rowread, RowreadUpper, Size) :-
-  (row(RowNumb, Rowread) ; row_lower(RowNumb, Rowread)), RowNumb < Size, RowNumb >= 0, 
-  row(RowNumb, RowreadUpper). 
-  
+check_row(Size, RCode, X) :-
+  peek_char(Char),
+  Char == '\n',
+  letter_number(RCode, X),
+  X < Size, X >= 0, 
+  format(': Row read :     ~w\n', RCode),
+  skip_line.
+
 % Gets Capital letter, ic case it reads lowercase letter
 % if not between A-y then try again
-check_row(_, CheckedRow, Size) :-
+check_row(Size, _, X) :-
   write('~ Invalid row\n| Select again\n'),
   skip_line,
-  read_row(Row, Size),
-  check_row(Row, CheckedRow, Size).
+  read_row(Size, RCode),
+  check_row(Size, RCode, X).
 
 % askMenuOption(+LowerBound, +UpperBound, -Number)
 % used in menus to read inputs between the Lower and Upper Bounds

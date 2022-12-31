@@ -1,46 +1,41 @@
-% difficulty(+Code, -Difficulty)
-% Gives the Difficulty associated with the code provided as an option
 difficulty(1, 'Easy').
 difficulty(2, 'Normal').
 
-% mode(+Code, -Mode)
-% Gives the Mode associated with the code provided as an option
-mode(1, 'Player 1', 'Player 2').
-mode(2, 'Player', 'Computer').
-mode(3, 'Computer 1', 'Computer 2').
-
-% play/0
-% main predicate for game start, presents the main menu
 play :-
   clear,
-  main_menu.
+  main_menu,
+  write('end').
 
-% start_game(+GameState, +Player1Type, +Player2Type)
-% starts a game with Player1Type vs Player2Type
-start_game(Size, TypePlayer1, TypePlayer2, Difficulty):-
+start_game(Number, TypePlayer1, TypePlayer2, Difficulty):-
   clear, 
-  board(Size, GameState),
-  display_board(GameState).
-/*   turn(GameState, Player1Type, 'Player 1', Player2Type).
- */
+  board(Number, Size),
+  initial_state(Size, GameState),
+  display_board(GameState),
+  mid_game(GameState, 1, TypePlayer1, TypePlayer2).
 
-% turn(GameState, Player1Type, 'Player 1', Player2Type ).
+mid_game(GameState, TurnCounter, P1, P2):- 
+  alternatePlayer(TurnCounter, P1, P2, NextPlayer, TurnCounter1),
+  next_move(GameState, NextPlayer, NewGameState, TurnCounter1),
+  write(TurnCounter1),
+  mid_game(NewGameState, TurnCounter1, P1, P2).
 
-% turn(+GameState, +Player, +PlayerS, +NextPlayer)
-% Turn predicate for final game state where player removes a piece instead of moving it
-turn(GameState, Player):-
-  game_over(GameState).
-  
+alternatePlayer(1, _, P2, P2, 2).
+alternatePlayer(2, P1, _, P1, 1).
 
-% Turn predicate for moving a piece
-turn(GameState, Player, PlayerS, NextPlayer):-
-  format('~n~`-t ~a turn ~`-t~57|~n', Player).
+next_move(GameState, Type, NewGameState, TC) :-
+  move(GameState, Type, NewGameState, TC).
 
+move(GameState,'Human', NewGameState, TC) :-
+  size_of_board(GameState, Size),
+  read_inputs(Size, Column, Row),
+  check_position(Column, Row, GameState), 
+  replace(GameState, Row, Column, TC, NewGameState).
 
+move(GameState, Type, NewGameState, TC) :-
+  write('errooo'),
+  move(GameState, Type, NewGameState, TC).
 
 % game_over(+GameState)
 game_over(GameState):-
-  move_options(GameState, Options),
+  valid_positions(GameState, ListOfMoves),
   length(Options, 0).
-
-  

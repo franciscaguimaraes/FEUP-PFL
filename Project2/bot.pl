@@ -1,8 +1,10 @@
+% choose_move(+GameState, +Player, +Difficulty, -Row, -Col)
+choose_move(Board, Row, Col):-
+    valid_positions(Board, ListOfMoves),
+    length(ListOfMoves, L),
+    L1 is L - 1,
+    random(0, L1, Position),
+    nth0(Position, ListOfMoves, Row-Col).
 
-bot_place_random(Board, X, Y):-
-    move_options(Board, Options),
-    length(Options, L),
-    random(0, L, Index),
-    nth0(Index, Options, X-Y).
 
-
+move(GameState, 'Human', NewGameState, TC)

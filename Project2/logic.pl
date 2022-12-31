@@ -1,4 +1,3 @@
-
 counter(0, Acc, Acc).
 counter(-1, Acc, Acc).
 counter(2, Acc, Acc1):-
@@ -75,7 +74,8 @@ replace(Board, X, Y, Player, BoardResult):-
     replace_index(Y, Board, NewRow, BoardResult),
     display_board(BoardResult).
 
-move_options(GameState, Options):-
+% valid_moves(+GameState, -ListOfMoves)
+valid_positions(GameState, ListOfMoves):-
     findall(X-Y, check_position(X, Y, GameState), Options).
 
 check_position(X, Y, Board):-

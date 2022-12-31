@@ -1,16 +1,13 @@
 
-% board(+Code, -Board)
-% Gives the Board associated with the code provided as an option
+% board(+Number, -Size)
+% Gives the size of the board associated with the option
+board(1,5).
+board(2,7).
 
-board(1, [
-  [0, 0, 0, 0, 0], 
-  [0, 0, 0, 0, 0], 
-  [0, 0, 0, 0, 0], 
-  [0, 0, 0, 0, 0], 
-  [0, 0, 0, 0, 0]
-]).
+% initial_state(+Size, -GameState)
+initial_state(5, [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0] ]).
 
-board(2, [
+initial_state(7, [
   [0, 0, 0, 0, 0, 0, 0], 
   [0, 0, 0, 0, 0, 0, 0], 
   [0, 0, 0, 0, 0, 0, 0], 
@@ -20,17 +17,17 @@ board(2, [
   [0, 0, 0, 0, 0, 0, 0]
 ]).
 
-% size_of_board(+Board, -X)
-% returns in X the size of the Square Board. Does not accept Rectangular Boards
-size_of_board(Board, X):-
+% size_of_board(+Board, -Size)
+% returns the size of the Square Board. Does not accept Rectangular Boards
+size_of_board(Board, Size):-
   nth0(0, Board, Header),
-  length(Header, X),
+  length(Header, Size),
   length(Board, Y),
-  X == Y. % check if board is nxn and not nxm
+  Size == Y.
 
-code(0, 32).   % ascii code for space
+code(0, 32).   % space
 code(1, 215).  % × - Player 1
-code(2, 216). % Ø - Player 2
+code(2, 216).  % Ø - Player 2
 
 player_piece('Player 1', 1).
 player_piece('Player 2', 2).

@@ -42,8 +42,6 @@ manage_option(3) :-
 manage_board_option_pp(0) :-
   main_menu.
 manage_board_option_pp(Number) :-
-  asserta(player(1, 'Human')),
-  asserta(player(2, 'Human')),
   start_game(Number, 'Human', 'Human', 0).
 
 manage_board_option_pc(0) :-
@@ -61,32 +59,19 @@ manage_player_option_pc(Size, Player) :-
 manage_difficulty_option_pc(_,_,0) :-
   main_menu.
 manage_difficulty_option_pc(Size, 1, Difficulty) :-
-  option_difficulty(Difficulty, Choice),
-  asserta(player(1, 'Human')),
-  asserta(player(2, 'Computer')),
-  asserta(difficulty(2, Choice)),
   start_game(Size, 'Human', 'Computer', Difficulty).
 manage_difficulty_option_pc(Size, 2, Difficulty) :-
-  option_difficulty(Difficulty, Choice),
-  asserta(player(1, 'Computer')),
-  asserta(player(2, 'Human')),
-  asserta(difficulty(1, Choice)),
   start_game(Size, 'Computer', 'Human', Difficulty).
 
 manage_board_option_cc(0):-
   main_menu.
 manage_board_option_cc(Size):-
   menu_choose_difficulty(Difficulty),
-  cc_start(Size, Difficulty).
+  manage_difficulty_option_cc(Size, Difficulty).
 
 manage_difficulty_option_cc(_,0):-
   main_menu.
 manage_difficulty_option_cc(Size, Difficulty):-
-  asserta(player(1, 'Computer')),
-  asserta(player(2, 'Computer')),
-  option_difficulty(Difficulty, Choice),
-  asserta(difficulty(1, Choice)),
-  asserta(difficulty(2, Choice)),
   start_game(Size, 'Computer', 'Computer', Difficulty).
 
 % printMenu/0
