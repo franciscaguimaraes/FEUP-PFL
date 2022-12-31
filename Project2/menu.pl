@@ -1,148 +1,99 @@
+% difficulty according to the option chosen
+option_difficulty(1, 'Easy').
+option_difficulty(2, 'Greedy').
+
 % clear/0
 % Clears the screen, for better user experience (UX)
 clear :- write('\33\[2J').
 
-% mainMenu/0
-% Prints the mainMenu and asks for user input to game mode
 main_menu :-
-  printMenu,
-  askMenuOption(0, 3, Number),
-  manageOption(Number).
+  clear,
+  print_menu,
+  ask_menu_option(0, 3, Number),
+  manage_option(Number).
 
 menu_board_size(Size) :- 
-  printBoardMenu,
-  askMenuOption(0, 2, Size).
+  clear,
+  print_board_menu,
+  ask_menu_option(0, 2, Size).
 
-menu_player_choose(Player) :- 
-  printPlayerMenu,
-  askMenuOption(0, 2, Player).
+menu_choose_player(Player) :- 
+  clear,
+  print_player_menu,
+  ask_menu_option(0, 2, Player).
 
-menu_difficulty_choose(Difficulty) :- 
-  printDifficultyMenu,
-  askMenuOption(0, 2, Difficulty).
-
+menu_choose_difficulty(Difficulty) :- 
+  clear,
+  print_difficulty_menu,
+  ask_menu_option(0, 2, Difficulty).
 
 manage_option(0) :-
-  write('\nThank you for Playing! Exiting...\n\n').
-
+  write('\nThank you for Playing (or trying)! Exiting game...\n\n').
 manage_option(1) :-
-  asserta(player(1, 'Player')),
-  asserta(player(2, 'Player')),
   menu_board_size(Size),
-  clear, start_game_pp(Size), clear.
-
+  manage_board_option_pp(Size).
 manage_option(2) :-
   menu_board_size(Size),
-  clear, menu_pc(Size), clear.
-
+  manage_board_option_pc(Size).
 manage_option(3) :-
   menu_board_size(Size),
-  clear, menu_cc(Size), clear.
+  manage_board_option_cc(Size).
 
-start_game_pp (0) :-
+manage_board_option_pp(0) :-
   main_menu.
+manage_board_option_pp(Number) :-
+  asserta(player(1, 'Human')),
+  asserta(player(2, 'Human')),
+  start_game(Number, 'Human', 'Human', 0).
 
-start_game_pp (Number) :-
-  option_size(Option, Size),
-    initial_state(Size,0),
-    asserta(turn(-1)),
-    game_loop,
-    start_game_pp (Number)
-
-menu_pc(0) :-
+manage_board_option_pc(0) :-
   main_menu.
-
-menu_choose_player(1) :-
+manage_board_option_pc(Size) :-
   menu_choose_player(Player),
-  menu_choose_difficulty
+  manage_player_option_pc(Size, Player).
 
+manage_player_option_pc(_,0) :- 
+  main_menu.
+manage_player_option_pc(Size, Player) :-
+  menu_choose_difficulty(Difficulty),
+  manage_difficulty_option_pc(Size, Player, Difficulty).
 
+manage_difficulty_option_pc(_,_,0) :-
+  main_menu.
+manage_difficulty_option_pc(Size, 1, Difficulty) :-
+  option_difficulty(Difficulty, Choice),
+  asserta(player(1, 'Human')),
+  asserta(player(2, 'Computer')),
+  asserta(difficulty(2, Choice)),
+  start_game(Size, 'Human', 'Computer', Difficulty).
+manage_difficulty_option_pc(Size, 2, Difficulty) :-
+  option_difficulty(Difficulty, Choice),
+  asserta(player(1, 'Computer')),
+  asserta(player(2, 'Human')),
+  asserta(difficulty(1, Choice)),
+  start_game(Size, 'Computer', 'Human', Difficulty).
 
+manage_board_option_cc(0):-
+  main_menu.
+manage_board_option_cc(Size):-
+  menu_choose_difficulty(Difficulty),
+  cc_start(Size, Difficulty).
 
-
-
-
-
-
-
-
-% manageOption(Number)
-% Given option chosen by user in mainMenu, takes action by exiting or entering playerMenu/boardMenu
-manageOption(0) :-      
-  write('\nExiting...\n\n').
-manageOption(2) :-      
-  clear,
-  playerMenu(2).
-manageOption(Mode) :-
-  clear,
-  boardMenu(0, Mode).
-
-% playerMenu(Mode)
-% Prints playerMenu taken into consideration the game mode chosen in the mainMenu. 
-% Asks user input for which player to choose.
-playerMenu(Mode) :-
-  printPlayerMenu,
-  askMenuOption(0, 2, Player),
-  managePlayerOption(Player, Mode).
- 
-% managePlayerOption(Player, Mode)
-% Given option chosen by user in playerMenu, takes action by going back to main menu or entering boardMenu with 
-% game mode and player already chosen.
-managePlayerOption(0, _) :-
-  clear,
-  mainMenu. 
-managePlayerOption(Player, Mode) :-
-  clear,
-  boardMenu(Player, Mode).
-
-% boardMenu(Player, Mode)
-% Prints boardMenu taken into consideration game mode and player chosen. Asks user input for game board size.
-boardMenu(Player, Mode) :-
-  printBoardMenu,
-  askMenuOption(0, 2, Size),
-  manageBoardOption(Size, Player, Mode).
-
-% manageBoardOption(Size, Player, Mode)
-% Given option chosen by user in boardMenu and previous menus: if option 0 is chosen, takes action by going back to
-% playerMenu if game mode is Player vs Computer and mainMenu otherwise; if other option is chosen, starts game if 
-% game mode is player vs player otherwise enters difficultyMenu with game mode, player chosen and board size taken
-% into consideration.
-manageBoardOption(0, _, 2) :-
-  clear,
-  playerMenu(2).
-manageBoardOption(0, _, Mode) :-
-  clear,
-  mainMenu.
-manageBoardOption(Size, Player, 1) :-
-  clear,
-  startGame(0, Size, Player, 1).
-manageBoardOption(Size, Player, Mode) :-
-  clear,
-  difficultyMenu(Size, Player, Mode).
-
-% difficultyMenu(Size, Player, Mode)
-% Prints difficultyMenu taken into consideration game mode, player chosen and board size. Asks user input 
-% for difficulty level.
-difficultyMenu(Size, Player, Mode) :-
-  printDifficultyMenu,
-  askMenuOption(0, 2, Difficulty),
-  manageDifficultyOption(Difficulty, Size, Player, Mode).
-
-% manageDifficultyOption(Difficulty, Size, Player, Mode)
-% Given option chosen by user in difficultyMenu, takes action by going back to boardMenu or starting the game
-% with all variables: game mode, player chosen, board size and difficulty already filled.
-manageDifficultyOption(0, _, Player, Mode) :-
-  clear, 
-  boardMenu(Player, Mode).
-manageDifficultyOption(Difficulty, Size, Player, Mode) :-
-  startGame(Difficulty, Size, Player, Mode).
+manage_difficulty_option_cc(_,0):-
+  main_menu.
+manage_difficulty_option_cc(Size, Difficulty):-
+  asserta(player(1, 'Computer')),
+  asserta(player(2, 'Computer')),
+  option_difficulty(Difficulty, Choice),
+  asserta(difficulty(1, Choice)),
+  asserta(difficulty(2, Choice)),
+  start_game(Size, 'Computer', 'Computer', Difficulty).
 
 % printMenu/0
 % prints menu to choose game mode 
-printMenu :-
+print_menu :-
 write(' _______________________________________________________________________ \n'),
 write('|                                                                       |\n'), 
-write('|                                                                       |\n'),
 write('|                 *   *  ***  ****   ****   ***   **   *                |\n'),
 write('|                 *   * *   * *   *  *   * *   *  * *  *                |\n'),
 write('|                 ***** ***** *    * ****  *   *  *  * *                |\n'),
@@ -150,6 +101,8 @@ write('|                 *   * *   * *   *  * *   *   *  *   **                |
 write('|                 *   * *   *  ***   *  *   ***   *    *                |\n'),
 write('|               -----------------------------------------               |\n'),
 write('|                                                                       |\n'),
+write('|                             MAIN MENU                                 |\n'),
+write('|                                                                       |\n'),                                                                                                                                            
 write('|                       Choose a Game Mode:                             |\n'),
 write('|                                                                       |\n'),
 write('|                       1. Player vs Player                             |\n'),
@@ -159,21 +112,21 @@ write('|                                                                       |
 write('|                       3. Computer vs Computer                         |\n'),
 write('|                                                                       |\n'),
 write('|                       0. Leave Game                                   |\n'),
-write('|                                                                       |\n'),
 write('|_______________________________________________________________________|\n').
 
 % printPlayerMenu/0
 % prints menu to choose player 
-printPlayerMenu :-
+print_player_menu :-
 write(' _______________________________________________________________________ \n'),
 write('|                                                                       |\n'), 
-write('|                                                                       |\n'),
 write('|                 *   *  ***  ****   ****   ***   **   *                |\n'),
 write('|                 *   * *   * *   *  *   * *   *  * *  *                |\n'),
 write('|                 ***** ***** *    * ****  *   *  *  * *                |\n'),
 write('|                 *   * *   * *   *  * *   *   *  *   **                |\n'),
 write('|                 *   * *   *  ***   *  *   ***   *    *                |\n'),
 write('|               -----------------------------------------               |\n'),
+write('|                                                                       |\n'),
+write('|                             PLAYER MENU                               |\n'),
 write('|                                                                       |\n'),
 write('|                       Choose a Player:                                |\n'),
 write('|                                                                       |\n'),
@@ -181,22 +134,22 @@ write('|                       1. x - Player 1  (Starts First)                 |
 write('|                                                                       |\n'),
 write('|                       2. o - Player 2                                 |\n'),
 write('|                                                                       |\n'),
-write('|                       0. Go Back                                      |\n'),
-write('|                                                                       |\n'),
+write('|                       0. Go Back to Main Menu                         |\n'),
 write('|_______________________________________________________________________|\n').
 
 % printBoardMenu/0
 % prints menu for board size
-printBoardMenu :-
+print_board_menu :-
 write(' _______________________________________________________________________ \n'),
 write('|                                                                       |\n'), 
-write('|                                                                       |\n'),
 write('|                 *   *  ***  ****   ****   ***   **   *                |\n'),
 write('|                 *   * *   * *   *  *   * *   *  * *  *                |\n'),
 write('|                 ***** ***** *    * ****  *   *  *  * *                |\n'),
 write('|                 *   * *   * *   *  * *   *   *  *   **                |\n'),
 write('|                 *   * *   *  ***   *  *   ***   *    *                |\n'),
 write('|               -----------------------------------------               |\n'),
+write('|                                                                       |\n'),
+write('|                             BOARD MENU                                |\n'),
 write('|                                                                       |\n'),
 write('|                       Choose a Board Size:                            |\n'),
 write('|                                                                       |\n'),
@@ -204,16 +157,14 @@ write('|                       1. 5x5                                          |
 write('|                                                                       |\n'),
 write('|                       2. 7x7                                          |\n'),
 write('|                                                                       |\n'),
-write('|                       0. Go Back                                      |\n'),
-write('|                                                                       |\n'),
+write('|                       0. Go Back to Main Menu                         |\n'),
 write('|_______________________________________________________________________|\n').
 
 % printDifficultyMenu/0
 % prints menu for difficulty level
-printDifficultyMenu :-
+print_difficulty_menu :-
 write(' _______________________________________________________________________ \n'),
 write('|                                                                       |\n'), 
-write('|                                                                       |\n'),
 write('|                 *   *  ***  ****   ****   ***   **   *                |\n'),
 write('|                 *   * *   * *   *  *   * *   *  * *  *                |\n'),
 write('|                 ***** ***** *    * ****  *   *  *  * *                |\n'),
@@ -221,13 +172,30 @@ write('|                 *   * *   * *   *  * *   *   *  *   **                |
 write('|                 *   * *   *  ***   *  *   ***   *    *                |\n'),
 write('|               -----------------------------------------               |\n'),
 write('|                                                                       |\n'),
+write('|                           DIFFICULTY MENU                             |\n'),
+write('|                                                                       |\n'),
 write('|                       Choose a Difficulty Level:                      |\n'),
 write('|                                                                       |\n'),
-write('|                       1. Easy                                         |\n'),
+write('|                       1. Easy  (Random Strategy)                      |\n'),
 write('|                                                                       |\n'),
-write('|                       2. Normal                                       |\n'),
+write('|                       2. Normal  (Greedy Strategy)                    |\n'),
 write('|                                                                       |\n'),
-write('|                       0. Go Back                                      |\n'),
-write('|                                                                       |\n'),
+write('|                       0. Go Back to Main Menu                         |\n'),
 write('|_______________________________________________________________________|\n').
 
+
+% win_message(+Player)
+% predicate that prints the winner message 
+win_message(Player):-
+  player_turn(Player, PlayerNumber),
+  format( '~n~`*t~57|~n', []),
+  format( '*~t Player ~d Won!~t*~57|~n', [PlayerNumber]),
+  format( '~`*t~57|~n', []),
+  sleep(5).
+
+% computer_move(+Row, +Col, +Player)
+% predicate that prints what is the computer move
+computer_move(Row, Col, Player):-
+  player_turn(Player, PlayerNumber),
+  row(Row, Letter),
+  format( '*~t Computer ~d Put a Piece in Tale ~dx~a!~t*~57|~n', [PlayerNumber, Col, Letter]).

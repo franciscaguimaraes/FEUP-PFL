@@ -13,14 +13,16 @@ mode(3, 'Computer 1', 'Computer 2').
 % main predicate for game start, presents the main menu
 play :-
   clear,
-  mainMenu.
+  main_menu.
 
 % start_game(+GameState, +Player1Type, +Player2Type)
 % starts a game with Player1Type vs Player2Type
-startGame(Difficulty, Size, Player, Mode):-
+start_game(Size, TypePlayer1, TypePlayer2, Difficulty):-
   clear, 
   board(Size, GameState),
   display_board(GameState).
+/*   turn(GameState, Player1Type, 'Player 1', Player2Type).
+ */
 
 % turn(GameState, Player1Type, 'Player 1', Player2Type ).
 

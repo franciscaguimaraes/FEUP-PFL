@@ -64,7 +64,7 @@ check_row(_, CheckedRow, Size) :-
 
 % askMenuOption(+LowerBound, +UpperBound, -Number)
 % used in menus to read inputs between the Lower and Upper Bounds
-askMenuOption(LowerBound, UpperBound, Number):-
+ask_menu_option(LowerBound, UpperBound, Number):-
   format('| Choose an Option (~d-~d) - ', [LowerBound, UpperBound]),
   get_code(NumberASCII),
   peek_char(Char),
@@ -72,7 +72,7 @@ askMenuOption(LowerBound, UpperBound, Number):-
   code_number(NumberASCII, Number),
   Number =< UpperBound, Number >= LowerBound, skip_line.
 
-askMenuOption(LowerBound, UpperBound, Number):-
+ask_menu_option(LowerBound, UpperBound, Number):-
   write('Not a valid number, try again\n'), skip_line,
-  askMenuOption(LowerBound, UpperBound, Number).
+  ask_menu_option(LowerBound, UpperBound, Number).
  
