@@ -69,13 +69,13 @@ replace_index(I, L, E, K) :-
 % replace(+Board, +X, +Y, +Value, -BoardResult)
 % replaces a value in the board
 replace(Board, X, Y, Player, BoardResult):-
-    nth0(Y, Board, Row),
-    replace_index(X, Row, Player, NewRow),
-    replace_index(Y, Board, NewRow, BoardResult),
+    nth0(X, Board, Row),
+    replace_index(Y, Row, Player, NewRow),
+    replace_index(X, Board, NewRow, BoardResult),
     display_board(BoardResult).
 
 % valid_moves(+GameState, -ListOfMoves)
-valid_positions(GameState, ListOfMoves):-
+valid_moves(GameState, ListOfMoves):-
     findall(X-Y, check_position(X, Y, GameState), Options).
 
 check_position(X, Y, Board):-

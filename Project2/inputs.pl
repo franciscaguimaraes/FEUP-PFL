@@ -27,11 +27,11 @@ letter_number('g',6).
 
 % read_inputs(+Size, -X, -Y)
 % Reads a Column and Row according to Size (of Board)
-read_inputs(Size, X, Y):-
+read_inputs(Size, Row, Col):-
   read_column(Size, CCode),
-  check_column(Size, CCode, X), %Column
+  check_column(Size, CCode, Col), %Column
   read_row(Size, RCode), 
-  check_row(Size, RCode, Y). %Row
+  check_row(Size, RCode, Row), !. %Row
 
 % read_column(-Column, +Size)
 % predicate to read column from user
