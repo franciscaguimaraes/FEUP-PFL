@@ -79,6 +79,9 @@ print_line([C|L]):-
   code(C, P),put_code(P), write(' | '),
   print_line(L).
 
+write_player(C) :-
+  code(C, P), put_code(P).
+
 display_board(Board):-
   clear,
   size_of_board(Board, X),

@@ -28,7 +28,7 @@ menu_choose_difficulty(Difficulty) :-
   ask_menu_option(0, 2, Difficulty).
 
 manage_option(0) :-
-  write('\nThank you for Playing (or trying)! Exiting game...\n\n').
+  write('\nThank you for Playing (or trying)! Exiting game...\n\n'), !.
 manage_option(1) :-
   menu_board_size(Size),
   manage_board_option_pp(Size).

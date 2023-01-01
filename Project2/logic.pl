@@ -36,25 +36,25 @@ can_place(Board, X, Y, Result):-
     counter(Value3, Count3, Result).
 
 % value_north(+Board, +X, +Y, -Value)
-% returns the value [1,-1,0] of the piece above the piece chosen
+% returns the value [1,2,0] of the piece above the piece chosen
 value_north(Board, X, Y, Value) :-
     X1 is X - 1,
     value_in_board(Board, X1, Y, Value).
 
 % value_south(+Board, +X, +Y, -Value)
-% returns the value [1,-1,0] of the piece below the piece chosen
+% returns the value [1,2,0] of the piece below the piece chosen
 value_south(Board, X, Y, Value) :-
     X1 is X + 1,
     value_in_board(Board, X1, Y, Value).
 
 % value_left(+Board, +X, +Y, -Value)
-% returns the value [1,-1,0] of the piece on the left the piece chosen
+% returns the value [1,2,0] of the piece on the left the piece chosen
 value_left(Board, X, Y, Value) :-
     Y1 is Y - 1,
     value_in_board(Board, X, Y1, Value).
 
 % value_right(+Board, +X, +Y, -Value)
-% returns the value [1,-1,0] of the piece on the right the piece chosen
+% returns the value [1,2,0] of the piece on the right the piece chosen
 value_right(Board, X, Y,  Value) :-
     Y1 is Y + 1,
     value_in_board(Board, X, Y1, Value).
@@ -66,7 +66,7 @@ replace_index(I, L, E, K) :-
     nth0(I, L, _, R),
     nth0(I, K, E, R).
 
-% replace(+Board, +X, +Y, +Value, -BoardResult)
+% replace(+Board, +X, +Y, +PLayer, -BoardResult)
 % replaces a value in the board
 replace(Board, X, Y, Player, BoardResult):-
     nth0(X, Board, Row),
@@ -78,6 +78,8 @@ replace(Board, X, Y, Player, BoardResult):-
 valid_moves(GameState, ListOfMoves):-
     findall(X-Y, check_position(GameState, X, Y), ListOfMoves).
 
+% check_position(+Board, +X, +Y)
+% checks if it is valid put a piece in position (X,Y)
 check_position(Board, X, Y):-
     nth0(X, Board, Row),
     nth0(Y, Row, Value),

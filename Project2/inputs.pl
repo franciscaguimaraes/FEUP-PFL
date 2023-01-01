@@ -27,44 +27,58 @@ letter_number('g',6).
 
 % read_inputs(+Size, -X, -Y)
 % Reads a Column and Row according to Size (of Board)
-read_inputs(Row, Col):-
-  read_column(CCode),
-  check_column(CCode, Col), %Column
-  read_row(RCode), !,
-  check_row(RCode, Row), !. %Row
+read_inputs(Size, Row, Col):-
+  read_column(Size, CCode),
+  check_column(Size, CCode, Col), %Column
+  read_row(Size, RCode), !,
+  check_row(Size, RCode, Row), !. %Row
 
 % read_column(-Column, +Size)
 % predicate to read column from user
-read_column(CCode) :-
-  write('| Column - '),
+read_column(Size, CCode) :-
+  format('> Column (0-~d) - ', Size-1),
   get_code(CCode).
 
 % check_column(+Testing, -CheckedColumn, +Size)
 % Checks if input is a valid column
-check_column(CCode, Y) :-
+check_column(Size, CCode, Y) :-
   peek_char(Char),
   Char == '\n',
   code_number(CCode, Y),
-  format(': Column read : ~d\n', Y),
+  Y < Size, Y >= 0, 
+  format('| Column read : ~d~n', Y),
   skip_line.
+
+check_column(Size, _, Y) :-
+  write('| Invalid column\n| Select again\n'),
+  skip_line,
+  read_column(Size, CCode),
+  check_column(Size, CCode, Y).
 
 % read_row(-Row, +Size)
 % predicate to read row from user
-read_row(RCode) :-
-  write('| Row - '),
+read_row(Size, RCode) :-
+  SNumber is Size - 1,
+  letter_number(Letter, SNumber),
+  format('> Row (A-~s) - ', Letter),
   get_char(RCode).
 
 % check_row(+Rowread, -CheckedRow, +Size)
 % checking rows
-check_row(RCode, X) :-
+check_row(Size, RCode, X) :-
   peek_char(Char),
   Char == '\n',
   letter_number(RCode, X),
-  format(': Row read : ~w\n', RCode),
+  X < Size, X >= 0, 
+  format('| Row read : ~w~n', RCode),
   skip_line.
 
+check_row(Size, _, X) :-
+  write('| Invalid row. Select again!! \n\n'), 
+  skip_line,
+  read_row(Size, RCode),
+  check_row(Size, RCode, X).
 
-%% prob é preciso o size pq sem a confirmação de ler bem, se não escrevermos nada o programa morre
 
 % askMenuOption(+LowerBound, +UpperBound, -Number)
 % used in menus to read inputs between the Lower and Upper Bounds
