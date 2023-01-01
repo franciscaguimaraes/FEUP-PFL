@@ -71,8 +71,7 @@ replace_index(I, L, E, K) :-
 replace(Board, X, Y, Player, BoardResult):-
     nth0(X, Board, Row),
     replace_index(Y, Row, Player, NewRow),
-    replace_index(X, Board, NewRow, BoardResult),
-    display_board(BoardResult).
+    replace_index(X, Board, NewRow, BoardResult).
 
 % valid_moves(+GameState, -ListOfMoves)
 valid_moves(GameState, ListOfMoves):-
