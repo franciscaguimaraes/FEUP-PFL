@@ -29,10 +29,6 @@ code(0, 32).   % space
 code(1, 215).  % × - Player 1
 code(2, 216).  % Ø - Player 2
 
-player_piece('Player 1', 1).
-player_piece('Player 2', 2).
-player_piece('Computer 1', 1).
-player_piece('Computer 2', 2).
 
 % Codes for board rows
 row(0, 'A').
@@ -88,13 +84,6 @@ display_board(Board):-
   size_of_board(Board, X),
   print_header(X),
   print_matrix(Board, 0, X).
-
-win_message(Player):-
-  player_turn(Player, PlayerNumber),
-  format( '~n~`*t~57|~n', []),
-  format( '*~t Player ~d Won!~t*~57|~n', [PlayerNumber]),
-  format( '~`*t~57|~n', []),
-  sleep(2).
 
 computer_move(Row, Col, Player):-
   player_turn(Player, PlayerNumber),

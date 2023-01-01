@@ -50,7 +50,7 @@ check_column(CCode, Y) :-
 
 % read_row(-Row, +Size)
 % predicate to read row from user
-read_row(Rcode) :-
+read_row(RCode) :-
   write('| Row - '),
   get_char(RCode).
 
@@ -63,6 +63,8 @@ check_row(RCode, X) :-
   format(': Row read : ~w\n', RCode),
   skip_line.
 
+
+%% prob é preciso o size pq sem a confirmação de ler bem, se não escrevermos nada o programa morre
 
 % askMenuOption(+LowerBound, +UpperBound, -Number)
 % used in menus to read inputs between the Lower and Upper Bounds
