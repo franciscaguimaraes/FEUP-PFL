@@ -25,41 +25,32 @@ start_game(Number, TypePlayer1, TypePlayer2, Difficulty):-
 
 play_pp(GameState, Player) :-
   game_over(GameState),
+  write('acabou').
 
-play_pp(GameState):-
+play_pp(GameState, Player):-
   choose_move_human(GameState, Row, Col),
+  replace(GameState, Row, Col, Player, NewGameState),
+  alternatePlayer(Player, NewPlayer),
+  play_pp(NewGameState, NewPlayer).
 
-alternatePlayer(1, _, P2, P2, 2).
-alternatePlayer(2, P1, _, P1, 1).
+alternatePlayer(1, 2).
+alternatePlayer(2, 1).
 
-playPvP(GameState) :-   
-
-  move(GameState,Move,NewGameState),
-  clear,
-  display_game(NewGameState),
-  playPvP(NewGameState).
-
-
-move(GameState,'Human', NewGameState, TC) :-
-  size_of_board(GameState, Size),
-  read_inputs(Size, Row, Col),
-  check_position(Row, Col, GameState),
-  replace(GameState, Row, Col, TC, NewGameState).
 
 % -----------------
 
 choose_move_human(GameState, Row, Col) :- 
   valid_moves(GameState, ListOfMoves),
   read_inputs(Row, Col),
-  check_move(ListOfMoves, Row, Col),
+  check_move(GameState, ListOfMoves, Row, Col).
 
-% check_move(+ListOfMoves,+Row,+Col,-Valid)
+% check_move(+ListOfMoves,+Row,+Col)
 % verifica se um movimento está presenta na Lista de movimentos dada
-check_move(ListOfMoves, Row, Col) :-
-  append(_, [Row-Col | _], ListOfMoves).
-check_move(_,_,_):-
+check_move(GameState, Row, Col) :-
+  check_position(GameState, Row, Col).
+check_move(GameState, Row, Col):-
   write('Invalid position. Choose again!'),
-  choose_move_human(GameState, Row, Col).
+  choose_move_human(GameState, Row, Col), !.
 
 % game_over(+GameState)
 game_over(GameState):-

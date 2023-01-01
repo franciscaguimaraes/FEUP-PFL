@@ -76,7 +76,7 @@ replace(Board, X, Y, Player, BoardResult):-
 
 % valid_moves(+GameState, -ListOfMoves)
 valid_moves(GameState, ListOfMoves):-
-    findall(X-Y, check_position(X, Y, GameState), Options).
+    findall(X-Y, check_position(X, Y, GameState), ListOfMoves).
 
 check_position(X, Y, Board):-
     nth0(X, Board, Row),
