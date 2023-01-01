@@ -28,8 +28,7 @@ start_game(Number, TypePlayer1, TypePlayer2, Difficulty):-
   initial_state(Size, GameState),
   display_board(GameState),
   get_play_mode(TypePlayer1, TypePlayer2, Mode),
-  play_mode(Mode, GameState, Difficulty),
-  play.
+  play_mode(Mode, GameState, Difficulty).
 
 % play_pp(+GameState, +Player)
 play_pp(GameState, Player) :-
