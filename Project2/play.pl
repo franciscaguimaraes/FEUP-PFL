@@ -1,6 +1,3 @@
-difficulty(1, 'Easy').
-difficulty(2, 'Normal').
-
 get_play_mode('Human', 'Human', 1).
 get_play_mode('Human', 'Computer', 2).
 get_play_mode('Computer', 'Human', 3).
