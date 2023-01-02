@@ -1,32 +1,52 @@
+% Gives the size of the board associated with the option
+board_size(1,5).
+board_size(2,7).
+
+
 % difficulty according to the option chosen
-option_difficulty(1, 'Easy').
-option_difficulty(2, 'Greedy').
+difficulty(1, 'Random').
+difficulty(2, 'Greedy').
+
 
 % clear/0
-% Clears the screen, for better user experience (UX)
+% Clears SICStus screen
 clear :- write('\33\[2J').
 
+
+% main_menu/0
+% clears the screen, prints main menu and asks for user input 
 main_menu :-
   clear,
   print_menu,
   ask_menu_option(0, 3, Number),
   manage_option(Number).
 
+
+% menu_board_size(-Size) 
+% clears the screen, prints board menu and asks for user input
 menu_board_size(Size) :- 
   clear,
   print_board_menu,
   ask_menu_option(0, 2, Size).
 
+
+% menu_choose_player(-Player)
+% clears the screen, prints player menu and asks for user input
 menu_choose_player(Player) :- 
   clear,
   print_player_menu,
   ask_menu_option(0, 2, Player).
 
+% menu_choose_difficulty(-Difficulty)
+% clears the screen, prints difficulty menu and asks for user input
 menu_choose_difficulty(Difficulty) :- 
   clear,
   print_difficulty_menu,
   ask_menu_option(0, 2, Difficulty).
 
+
+% manage_option(+Number)
+% takes action from main menu, taking into consideration user input
 manage_option(0) :-
   write('\nThank you for Playing (or trying)! Exiting game...\n\n'), !.
 manage_option(1) :-
@@ -39,42 +59,68 @@ manage_option(3) :-
   menu_board_size(Size),
   manage_board_option_cc(Size).
 
+
+% manage_board_option_pp(+Number)
+% takes action with player-player mode from board menu, taking into consideration user input 
 manage_board_option_pp(0) :-
   main_menu.
 manage_board_option_pp(Number) :-
-  start_game(Number, 'Human', 'Human', 0).
+  board_size(Number, Size),
+  start_game(Size, 'Human', 'Human', 0).
 
+
+% manage_board_option_pc(+Number)
+% takes action with player-computer mode from board menu, taking into consideration user input 
 manage_board_option_pc(0) :-
   main_menu.
 manage_board_option_pc(Size) :-
   menu_choose_player(Player),
   manage_player_option_pc(Size, Player).
 
-manage_player_option_pc(_,0) :- 
-  main_menu.
-manage_player_option_pc(Size, Player) :-
-  menu_choose_difficulty(Difficulty),
-  manage_difficulty_option_pc(Size, Player, Difficulty).
 
-manage_difficulty_option_pc(_,_,0) :-
-  main_menu.
-manage_difficulty_option_pc(Size, 1, Difficulty) :-
-  start_game(Size, 'Human', 'Computer', Difficulty).
-manage_difficulty_option_pc(Size, 2, Difficulty) :-
-  start_game(Size, 'Computer', 'Human', Difficulty).
-
+% manage_board_option_cc(+Number):-
+% takes action with computer-computer mode from board menu, taking into consideration user input 
 manage_board_option_cc(0):-
   main_menu.
 manage_board_option_cc(Size):-
   menu_choose_difficulty(Difficulty),
   manage_difficulty_option_cc(Size, Difficulty).
 
+
+% manage_player_option_pc(+Size, +Player) :- 
+% takes action with player-computer mode from player menu, taking into consideration user input 
+manage_player_option_pc(_,0) :- 
+  main_menu.
+manage_player_option_pc(Size, Player) :-
+  menu_choose_difficulty(Difficulty),
+  manage_difficulty_option_pc(Size, Player, Difficulty).
+
+
+% manage_difficulty_option_pc(+Size, +Player, +Difficulty)
+% takes action with player-computer mode from difficulty menu, taking into consideration user input 
+manage_difficulty_option_pc(_,_,0) :-
+  main_menu.
+manage_difficulty_option_pc(Size, 1, Difficulty) :-
+  difficulty(Difficulty, Option),
+  board_size(Size, Option2),
+  start_game(Option2, 'Human', 'Computer', Option).
+manage_difficulty_option_pc(Size, 2, Difficulty) :-
+  difficulty(Difficulty, Option),
+  board_size(Size, Option2),
+  start_game(Option2, 'Computer', 'Human', Option).
+
+
+% manage_difficulty_option_cc(+Size, +Difficulty)
+% % takes action with computer-computer mode from difficulty menu, taking into consideration user input 
 manage_difficulty_option_cc(_,0):-
   main_menu.
 manage_difficulty_option_cc(Size, Difficulty):-
-  start_game(Size, 'Computer', 'Computer', Difficulty).
+  difficulty(Difficulty, Option),
+  board_size(Size, Option2),
+  start_game(Option2, 'Computer', 'Computer', Option).
 
-% printMenu/0
+
+% print_menu/0
 % prints menu to choose game mode 
 print_menu :-
 write(' _______________________________________________________________________ \n'),
@@ -99,7 +145,7 @@ write('|                                                                       |
 write('|                       0. Leave Game                                   |\n'),
 write('|_______________________________________________________________________|\n').
 
-% printPlayerMenu/0
+% print_player_menu/0
 % prints menu to choose player 
 print_player_menu :-
 write(' _______________________________________________________________________ \n'),
@@ -122,7 +168,7 @@ write('|                                                                       |
 write('|                       0. Go Back to Main Menu                         |\n'),
 write('|_______________________________________________________________________|\n').
 
-% printBoardMenu/0
+% print_board_menu/0
 % prints menu for board size
 print_board_menu :-
 write(' _______________________________________________________________________ \n'),
@@ -145,7 +191,7 @@ write('|                                                                       |
 write('|                       0. Go Back to Main Menu                         |\n'),
 write('|_______________________________________________________________________|\n').
 
-% printDifficultyMenu/0
+% print_difficulty_menu/0
 % prints menu for difficulty level
 print_difficulty_menu :-
 write(' _______________________________________________________________________ \n'),
