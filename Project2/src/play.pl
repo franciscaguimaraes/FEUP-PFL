@@ -75,8 +75,8 @@ move_human(GameState, Player, Mode, Difficulty, NewGameState) :-
   replace(GameState, Row, Col, Player, NewGameState).
 
 
-% move_cumputer(+GameState, Player, Difficulty, -NewGameState, -Row, -Col)
-% 
+% move_cumputer(+GameState, +Player, +Difficulty, -NewGameState, -Row, -Col)
+% choses move for computer and places it in new board
 move_computer(GameState, Player, Difficulty, NewGameState, Row, Col) :- 
   choose_move_computer(GameState, Difficulty, Player, Row, Col),
   replace(GameState, Row, Col, Player, NewGameState).

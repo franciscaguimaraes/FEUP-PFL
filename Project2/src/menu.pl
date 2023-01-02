@@ -2,7 +2,7 @@
 board_size(1,5).
 board_size(2,7).
 
-% difficulty(1, 'Random'
+
 % difficulty according to the option chosen
 difficulty(1, 'Random').
 difficulty(2, 'Greedy').
@@ -66,7 +66,7 @@ manage_board_option_pp(0) :-
   main_menu.
 manage_board_option_pp(Number) :-
   board_size(Number, Size),
-  start_game(Size, 'Human', 'Human', 0).
+  start_game(Size, 'Human', 'Human', 0, 0).
 
 
 % manage_board_option_pc(+Number)
@@ -107,13 +107,13 @@ manage_player_option_pc(Size, Player) :-
 manage_difficulty_option_pc(_,_,0) :-
   main_menu.
 manage_difficulty_option_pc(Size, 1, Difficulty) :-
-  difficulty(Difficulty, Option),
-  board_size(Size, Option2),
-  start_game(Option2, 'Human', 'Computer', Option).
+  difficulty(Difficulty, DifficultyOption),
+  board_size(Size, SizeOption),
+  start_game(SizeOption, 'Human', 'Computer', DifficultyOption, 0).
 manage_difficulty_option_pc(Size, 2, Difficulty) :-
   difficulty(Difficulty, Option),
-  board_size(Size, Option2),
-  start_game(Option2, 'Computer', 'Human', Option).
+  board_size(Size, SizeOption),
+  start_game(SizeOption, 'Computer', 'Human', DifficultyOption, 0).
 
 
 % manage_difficulty_option_cc(+Size, +Difficulty)
@@ -217,9 +217,9 @@ write('|                           DIFFICULTY MENU                             |
 write('|                                                                       |\n'),
 write('|                       Choose a Difficulty Level:                      |\n'),
 write('|                                                                       |\n'),
-write('|                       1. Easy  (Random Strategy)                      |\n'),
+write('|                       1. Level 1  (Random Strategy)                   |\n'),
 write('|                                                                       |\n'),
-write('|                       2. Normal  (Greedy Strategy)                    |\n'),
+write('|                       2. Level 2  (Greedy Strategy)                   |\n'),
 write('|                                                                       |\n'),
 write('|                       0. Go Back to Main Menu                         |\n'),
 write('|_______________________________________________________________________|\n').
@@ -239,9 +239,9 @@ print_difficulty_menu(Player) :-
   write('|                                                                       |\n'),
   write('|                       Choose a Difficulty Level:                      |\n'),
   write('|                                                                       |\n'),
-  write('|                       1. Easy  (Random Strategy)                      |\n'),
+  write('|                       1. Level 1  (Random Strategy)                   |\n'),
   write('|                                                                       |\n'),
-  write('|                       2. Normal  (Greedy Strategy)                    |\n'),
+  write('|                       2. Level 2  (Greedy Strategy)                   |\n'),
   write('|                                                                       |\n'),
   write('|                       0. Go Back to Main Menu                         |\n'),
   write('|_______________________________________________________________________|\n').
