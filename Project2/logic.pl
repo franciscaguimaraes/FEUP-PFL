@@ -80,7 +80,7 @@ replace(Board, X, Y, Player, BoardResult):-
 
 
 % valid_moves(+GameState, -ListOfMoves)
-% returns a ListOfMoves containing all possible moves for GameState
+% returns in ListOfMoves all possible moves for GameState
 valid_moves(GameState, ListOfMoves):-
     findall(X-Y, check_position(GameState, X, Y), ListOfMoves).
 

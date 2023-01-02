@@ -147,6 +147,7 @@ play_cc(GameState, Player, Difficulty) :-
   play_cc(NewGameState, NewPlayer, Difficulty).
 
 % game_over(+GameState)
+% checks if there is no valid moves left (game over)
 game_over(GameState):-
   valid_moves(GameState, ListOfMoves),
   length(ListOfMoves, 0).

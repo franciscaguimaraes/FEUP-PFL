@@ -1,4 +1,4 @@
-% choose_move(+GameState, +Player, +Difficulty, -Row, -Col)
+% choose_move(+GameState, +Player, +Level, -Row, -Col)
 choose_move_computer(Board, 1, _, Row, Col):-
     valid_moves(Board, ListOfMoves),
     length(ListOfMoves, L),
