@@ -7,17 +7,11 @@ counter(1, Acc, Acc1):-
 
 % value_in_board(+Board, +X, +Y, -Value)
 % returns in Value the value [0,1,2] at (X,Y) from Board 
-value_in_board(Board, -1, Y, Value):-
-    Value is 0.
-
-value_in_board(Board, X, -1, Value):-
-    Value is 0.
-
-value_in_board(Board, X, Y, Value):-
+value_in_board(_, -1, _, 0).
+value_in_board(_, _, -1, 0).
+value_in_board(Board, X, Y, 0):-
     size_of_board(Board, Length),
-    (X =:= Length; Y =:= Length),
-    Value is 0.
-
+    (X =:= Length; Y =:= Length).
 value_in_board(Board, X, Y, Value):-
     nth0(X, Board, Row),
     nth0(Y, Row, Value).

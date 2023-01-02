@@ -42,6 +42,7 @@ play_pp(GameState, Player) :-
 play_pp(GameState, Player):-
   choose_move_human(GameState, Player, Row, Col),
   replace(GameState, Row, Col, Player, NewGameState),
+  display_board(NewGameState),
   alternatePlayer(Player, NewPlayer),
   play_pp(NewGameState, NewPlayer).
 
@@ -80,14 +81,16 @@ play_pc(GameState, Player, Difficulty) :-
   is_human_pc(Player),
   choose_move_human(GameState, Player, Row, Col),
   replace(GameState, Row, Col, Player, NewGameState),
+  display_board(NewGameState),
   alternatePlayer(Player, NewPlayer),
   play_pc(NewGameState, NewPlayer, Difficulty).
 
 play_pc(GameState, Player , Difficulty) :-  
-  choose_move_computer(GameState, 'Easy', Row, Col),
+  choose_move_computer(GameState, Difficulty, Player, Row, Col),
   letter_number(Column, Col),
   sleep(1),
   replace(GameState, Row, Col, Player, NewGameState), nl,
+  display_board(NewGameState),
   format('| Computer placed a piece in Row:~d Column:~a! ~n~n', [Row, Column]),
   alternatePlayer(Player, NewPlayer),
   play_pc(NewGameState, NewPlayer, Difficulty).
@@ -112,14 +115,16 @@ play_cp(GameState, Player, Difficulty) :-
   is_human_cp(Player),
   choose_move_human(GameState, Player, Row, Col),
   replace(GameState, Row, Col, Player, NewGameState),
+  display_board(NewGameState),
   alternatePlayer(Player, NewPlayer),
   play_cp(NewGameState, NewPlayer, Difficulty).
 
 play_cp(GameState, Player , Difficulty) :-  
-  choose_move_computer(GameState, 'Easy', Row, Col),
+  choose_move_computer(GameState, Difficulty, Player, Row, Col),
   letter_number(Column, Col),
   sleep(1),
   replace(GameState, Row, Col, Player, NewGameState), nl,
+  display_board(NewGameState),
   format('| Computer placed a piece in Row:~d Column:~a! ~n~n', [Row, Column]),
   alternatePlayer(Player, NewPlayer),
   play_cp(NewGameState, NewPlayer, Difficulty).
@@ -132,14 +137,15 @@ play_cc(GameState, Player, _) :-
   alternatePlayer(Player, NewPlayer),
   format( '| Computer ~d - ' , [NewPlayer]), write_player(NewPlayer), write( ' - Won!'), nl,
   sleep(5),
-  main_menu.
+  main_menu. 
 
-play_cc(GameState, Player , Difficulty) :-  
-  choose_move_computer(GameState, 'Easy', Row, Col),
+play_cc(GameState, Player, Difficulty) :-  
+  choose_move_computer(GameState, Difficulty, Player, Row, Col),
   letter_number(Column, Col),
   sleep(2),
-  replace(GameState, Row, Col, Player, NewGameState), nl,
-  format('| Computer ~d - ', [Player]), write_player(Player), format(' - placed a piece in Row:~d Column:~a! ~n~n', [Row, Column]),
+  replace(GameState, Row, Col, Player, NewGameState),
+  display_board(NewGameState),
+  format('~n| Computer ~d - ', [Player]), write_player(Player), format(' - placed a piece in Row:~d Column:~a! ~n~n', [Row, Column]),
   alternatePlayer(Player, NewPlayer),
   play_cc(NewGameState, NewPlayer, Difficulty).
 

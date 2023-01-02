@@ -2,21 +2,26 @@
 choose_move_computer(Board, 'Easy', _, Row, Col):-
     valid_moves(Board, ListOfMoves),
     length(ListOfMoves, L),
-    /* L1 is L - 1, */ %pq serve isto?
     random(0, L, Position),
     nth0(Position, ListOfMoves, Row-Col).
 
-choose_move_computer_n(GameState, Player, Row, Col):-
+choose_move_computer(GameState, 'Normal', Player, Row, Col):-
     valid_moves(GameState, ListOfMoves),
-    A is -1, Row is 0, Col is 0,
-    counter_of_moves(ListOfMoves, GameState, Player, A-Row-Col).
+    counter_of_moves(ListOfMoves, GameState, Player, Result),
+    sort_by_plays(Result, OrderedSolution),
+    random(0, 4, Position), % best 3
+    nth0(Position, OrderedSolution, _-Row-Col).
 
-counter_of_moves([X-Y | L], GameState, Player, A-B-C):-
-    replace(GameState, X, Y, Player, NewGameState),
+counter_of_moves([], _, _, []).
+counter_of_moves([ X-Y | L], GameState, Player, Result):-
+    replace(GameState, X, Y, Player, NewGameState), 
     valid_moves(NewGameState, Options),
-    length(Options, Length),
-    Length > A,
-    counter_of_moves(L, GameState, Player, Length-X-Y).
+    length(Options, Plays),
+    counter_of_moves(L, GameState, Player, NewResult),
+    append(NewResult, [Plays-X-Y], Result).
 
-counter_of_moves([X-Y | L], GameState, Player, A-B-C):-
-    counter_of_moves(L, GameState, Player, A-B-C).
+sort_by_plays(List, Sorted) :- 
+    predsort(compare_plays, List, Sorted).
+
+compare_plays(Plays1-_-_, Plays2-_-_) :- Plays1 @< Plays2.
+

@@ -1,4 +1,3 @@
-
 % board(+Number, -Size)
 % Gives the size of the board associated with the option
 board(1,5).
@@ -28,7 +27,6 @@ size_of_board(Board, Size):-
 code(0, 32).   % space
 code(1, 215).  % × - Player 1
 code(2, 216).  % Ø - Player 2
-
 
 % Codes for board rows
 row(0, 'A').
@@ -71,7 +69,7 @@ print_matrix([L|T], N, X):-
     print_line(L), nl,
     write('---'), print_separator(X),
     print_matrix(T, N1, X).
-print_matrix(_, _, X).
+print_matrix(_, _, _).
 
 print_line([]).
 
@@ -87,8 +85,3 @@ display_board(Board):-
   size_of_board(Board, X),
   print_header(X),
   print_matrix(Board, 0, X).
-
-computer_move(Row, Col, Player):-
-  player_turn(Player, PlayerNumber),
-  row(Row, Letter),
-  format( '*~t Computer ~d Put a Piece in Tale ~dx~a!~t*~57|~n', [PlayerNumber, Col, Letter]).

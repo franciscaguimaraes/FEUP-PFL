@@ -167,20 +167,3 @@ write('|                       2. Normal  (Greedy Strategy)                    |
 write('|                                                                       |\n'),
 write('|                       0. Go Back to Main Menu                         |\n'),
 write('|_______________________________________________________________________|\n').
-
-
-% win_message(+Player)
-% predicate that prints the winner message 
-win_message(Player):-
-  player_turn(Player, PlayerNumber),
-  format( '~n~`*t~57|~n', []),
-  format( '*~t Player ~d Won!~t*~57|~n', [PlayerNumber]),
-  format( '~`*t~57|~n', []),
-  sleep(5).
-
-% computer_move(+Row, +Col, +Player)
-% predicate that prints what is the computer move
-computer_move(Row, Col, Player):-
-  player_turn(Player, PlayerNumber),
-  row(Row, Letter),
-  format( '*~t Computer ~d Put a Piece in Tale ~dx~a!~t*~57|~n', [PlayerNumber, Col, Letter]).
