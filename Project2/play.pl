@@ -4,21 +4,25 @@ get_play_mode('Human', 'Computer', 2).
 get_play_mode('Computer', 'Human', 3).
 get_play_mode('Computer', 'Computer', 4).
 
-
+% play_mode(+Mode, +GameState, +Difficulty)
 % given play mode, starts game accordingly
 play_mode(1, GameState, _) :- play_pp(GameState, 1). %Player vs Player
 play_mode(2, GameState, Difficulty) :- play_pc(GameState, 1, Difficulty). %Player vs Computer
 play_mode(3, GameState, Difficulty) :- play_cp(GameState, 1, Difficulty). %Computer vs Player 
 play_mode(4, GameState, Difficulty) :- play_cc(GameState, 1, Difficulty). %Computer vs Computer
 
-
+% alternatePlayer(+Player, -NewPlayer)
 % alternates players between games
 alternatePlayer(1, 2).
 alternatePlayer(2, 1).
 
-
-% checks if, given play mode, player is human
+% is_human_pc(+Player)
+% checks if, given play mode pc, player is human
 is_human_pc(1). % PlayervsComputer - player 1st
+
+
+% is_human_cp(+Player)
+% checks if, given play mode cp, player is human
 is_human_cp(2). % ComputervsPlayer - player 2nd
 
 
@@ -43,7 +47,7 @@ play_pp(GameState, Player) :-
   main_menu.
 play_pp(GameState, Player):-
   choose_move_human(GameState, Player, Row, Col, 'pp', 0),
-  replace(GameState, Row, Col, Player, NewGameState),
+  move(GameState, Row, Col, Player, Move, 0),
   display_board(NewGameState),
   alternatePlayer(Player, NewPlayer),
   play_pp(NewGameState, NewPlayer).
@@ -55,7 +59,11 @@ choose_move_human(GameState, Player, Row, Col, Mode, Difficulty) :-
   size_of_board(GameState, Size),
   format( '~n| Player ~d - ' , [Player]), write_player(Player), write( ' - make a move! \n\n'),
   read_inputs(Size, Row, Col), 
-  check_move(GameState, Player, Row, Col, Mode, Difficulty).
+
+% move(GameState, Row, Col, Player, Mode, Difficulty, NewGameState)
+move(GameState, Row, Col, Player, Mode, Difficulty, NewGameState) :-
+  check_move(GameState, Player, Row, Col, Mode, Difficulty),
+  replace(GameState, Row, Col, Player, NewGameState).
 
 
 % check_move(+GameState, +Player, +Row, +Col)
@@ -96,11 +104,11 @@ play_pc(GameState, Player, Difficulty) :-
   play_pc(NewGameState, NewPlayer, Difficulty).
 play_pc(GameState, Player , Difficulty) :-  
   choose_move_computer(GameState, Difficulty, Player, Row, Col),
-  letter_number(Column, Col),
+  letter_number(R, Row),
   sleep(1),
   replace(GameState, Row, Col, Player, NewGameState), nl,
   display_board(NewGameState),
-  format('~n| Computer placed a piece in Row:~d Column:~a! ~n~n', [Row, Column]),
+  format('~n| Computer placed a piece in Row:~d Column:~a! ~n~n', [R, Col]),
   alternatePlayer(Player, NewPlayer),
   play_pc(NewGameState, NewPlayer, Difficulty).
 
@@ -148,11 +156,11 @@ play_cc(GameState, Player, _) :-
   main_menu. 
 play_cc(GameState, Player, Difficulty) :-  
   choose_move_computer(GameState, Difficulty, Player, Row, Col),
-  letter_number(Column, Col),
+  letter_number(R, Row),
   sleep(2),
   replace(GameState, Row, Col, Player, NewGameState),
   display_board(NewGameState),
-  format('~n| Computer ~d - ', [Player]), write_player(Player), format(' - placed a piece in Row:~d Column:~a! ~n~n', [Row, Column]),
+  format('~n| Computer ~d - ', [Player]), write_player(Player), format(' - placed a piece in Row:~d Column:~a! ~n~n', [R, Col]),
   alternatePlayer(Player, NewPlayer),
   play_cc(NewGameState, NewPlayer, Difficulty).
 
