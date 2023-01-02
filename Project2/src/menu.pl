@@ -116,7 +116,7 @@ manage_difficulty_option_pc(Size, 2, Difficulty) :-
   start_game(SizeOption, 'Computer', 'Human', DifficultyOption, 0).
 
 
-% manage_difficulty_option_cc(+Size, +Difficulty)
+% manage_difficulty_option_cc(+Size, +Difficulty1, +Difficulty2)
 % takes action with computer-computer mode from difficulty menu, taking into consideration user input 
 manage_difficulty_option_cc(_,0,_):-
   main_menu.
@@ -224,6 +224,8 @@ write('|                                                                       |
 write('|                       0. Go Back to Main Menu                         |\n'),
 write('|_______________________________________________________________________|\n').
 
+% print_difficulty_menu(+Player)
+% prints difficulty menu for computer vs computer mode
 print_difficulty_menu(Player) :-
   write(' _______________________________________________________________________ \n'),
   write('|                                                                       |\n'), 
