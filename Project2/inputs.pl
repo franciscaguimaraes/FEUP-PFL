@@ -1,3 +1,4 @@
+% ASCII code and number it represents
 code_number(48, 0).
 code_number(49, 1).
 code_number(50, 2).
@@ -9,7 +10,8 @@ code_number(55, 7).
 code_number(56, 8).
 code_number(57, 9).
 
-% Letter to index ratio
+
+% Letter and number it represents in board
 letter_number('A',0).
 letter_number('B',1).
 letter_number('C',2).
@@ -25,22 +27,25 @@ letter_number('e',4).
 letter_number('f',5).
 letter_number('g',6).
 
+
 % read_inputs(+Size, -X, -Y)
-% Reads a Column and Row according to Size (of Board)
+% Reads Column and Row and checks if valid number according to size of Board
 read_inputs(Size, Row, Col):-
   read_column(Size, CCode),
   check_column(Size, CCode, Col), %Column
   read_row(Size, RCode), !,
   check_row(Size, RCode, Row), !. %Row
 
-% read_column(-Column, +Size)
-% predicate to read column from user
+
+% read_column(+Size, -CCode)
+% Reads column from user
 read_column(Size, CCode) :-
   format('> Column (0-~d) - ', Size-1),
   get_code(CCode).
 
-% check_column(+Testing, -CheckedColumn, +Size)
-% Checks if input is a valid column
+
+% check_column(+Size, +CCode, -Y)
+% Checks if input from user is a valid column input
 check_column(Size, CCode, Y) :-
   peek_char(Char),
   Char == '\n',
@@ -48,23 +53,24 @@ check_column(Size, CCode, Y) :-
   Y < Size, Y >= 0, 
   format('| Column read : ~d~n', Y),
   skip_line.
-
 check_column(Size, _, Y) :-
   write('| Invalid column\n| Select again\n'),
   skip_line,
   read_column(Size, CCode),
   check_column(Size, CCode, Y).
 
-% read_row(-Row, +Size)
-% predicate to read row from user
+
+% read_row(+Size, -RCode)
+% Reads row from user
 read_row(Size, RCode) :-
   SNumber is Size - 1,
   letter_number(Letter, SNumber),
   format('> Row (A-~s) - ', Letter),
   get_char(RCode).
 
-% check_row(+Rowread, -CheckedRow, +Size)
-% checking rows
+
+% check_row(+Size, +RCode, -X)
+% Checks if input from user is a valid row input
 check_row(Size, RCode, X) :-
   peek_char(Char),
   Char == '\n',
@@ -72,7 +78,6 @@ check_row(Size, RCode, X) :-
   X < Size, X >= 0, 
   format('| Row read : ~w~n', RCode),
   skip_line.
-
 check_row(Size, _, X) :-
   write('| Invalid row. Select again!! \n\n'), 
   skip_line,
@@ -80,17 +85,16 @@ check_row(Size, _, X) :-
   check_row(Size, RCode, X).
 
 
-% askMenuOption(+LowerBound, +UpperBound, -Number)
-% used in menus to read inputs between the Lower and Upper Bounds
-ask_menu_option(LowerBound, UpperBound, Number):-
-  format('| Choose an Option (~d-~d) - ', [LowerBound, UpperBound]),
+% askMenuOption(+Low, +Up, -Number)
+% Validates input from user received in menu, taken into consideration number of options (Low, Up)
+ask_menu_option(Low, Up, Number):-
+  format('| Choose an Option (~d-~d) - ', [Low, Up]),
   get_code(NumberASCII),
-  peek_char(Char),
-  Char == '\n',
+  peek_char(C),
+  C == '\n',
   code_number(NumberASCII, Number),
-  Number =< UpperBound, Number >= LowerBound, skip_line.
-
-ask_menu_option(LowerBound, UpperBound, Number):-
+  Number =< Up, Number >= Low, skip_line.
+ask_menu_option(Low, Up, Number):-
   write('Not a valid number, try again\n'), skip_line,
-  ask_menu_option(LowerBound, UpperBound, Number).
+  ask_menu_option(Low, Up, Number).
  
