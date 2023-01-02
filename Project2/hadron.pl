@@ -1,4 +1,4 @@
-/* Necessary Files */
+/* Files Necessary */
 :- consult('display.pl').
 :- consult('play.pl').
 :- consult('menu.pl').
@@ -10,6 +10,8 @@
 :- use_module(library(random)).
 :- use_module(library(samsort)).
 
-% Start predicate
-hadron :-
-  play.
+% play/0
+% Start Game
+play :-
+  clear,
+  main_menu, !.
