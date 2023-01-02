@@ -12,7 +12,7 @@ counter(1, Acc, Acc1):-
 
 
 % value_in_board(+Board, +X, +Y, -Value)
-% returns in Value the value [-1,0,1,2] at (X,Y) from Board.
+% returns in Value the value [0,1,2] at (X,Y) from Board.
 value_in_board(_, -1, _, 0).
 value_in_board(_, _, -1, 0).
 value_in_board(Board, X, Y, 0):-
@@ -37,28 +37,28 @@ can_place(Board, X, Y, Result):-
 
 
 % value_north(+Board, +X, +Y, -Value)
-% returns the value [-1,1,2,0] of the piece above the piece chosen
+% returns the value [0,1,2] of the piece above the piece chosen
 value_north(Board, X, Y, Value) :-
     X1 is X - 1,
     value_in_board(Board, X1, Y, Value).
 
 
 % value_south(+Board, +X, +Y, -Value)
-% returns the value [-1,1,2,0] of the piece below the piece chosen
+% returns the value [0,1,2] of the piece below the piece chosen
 value_south(Board, X, Y, Value) :-
     X1 is X + 1,
     value_in_board(Board, X1, Y, Value).
 
 
 % value_left(+Board, +X, +Y, -Value)
-% returns the value [-1,1,2,0] of the piece on the left the piece chosen
+% returns the value [0,1,2] of the piece on the left the piece chosen
 value_left(Board, X, Y, Value) :-
     Y1 is Y - 1,
     value_in_board(Board, X, Y1, Value).
 
 
 % value_right(+Board, +X, +Y, -Value)
-% returns the value [-1,1,2,0] of the piece on the right the piece chosen
+% returns the value [0,1,2] of the piece on the right the piece chosen
 value_right(Board, X, Y,  Value) :-
     Y1 is Y + 1,
     value_in_board(Board, X, Y1, Value).
