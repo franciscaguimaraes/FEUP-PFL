@@ -2,7 +2,7 @@
 board_size(1,5).
 board_size(2,7).
 
-
+% difficulty(1, 'Random'
 % difficulty according to the option chosen
 difficulty(1, 'Random').
 difficulty(2, 'Greedy').
@@ -83,8 +83,14 @@ manage_board_option_pc(Size) :-
 manage_board_option_cc(0):-
   main_menu.
 manage_board_option_cc(Size):-
-  menu_choose_difficulty(Difficulty),
-  manage_difficulty_option_cc(Size, Difficulty).
+  clear,
+  print_difficulty_menu(1),
+  ask_menu_option(0, 2, Difficulty1),
+  clear,
+  print_difficulty_menu(2),
+  ask_menu_option(0, 2, Difficulty2),
+  clear,
+  manage_difficulty_option_cc(Size, Difficulty1, Difficulty2).
 
 
 % manage_player_option_pc(+Size, +Player) :- 
@@ -111,13 +117,17 @@ manage_difficulty_option_pc(Size, 2, Difficulty) :-
 
 
 % manage_difficulty_option_cc(+Size, +Difficulty)
-% % takes action with computer-computer mode from difficulty menu, taking into consideration user input 
-manage_difficulty_option_cc(_,0):-
+% takes action with computer-computer mode from difficulty menu, taking into consideration user input 
+manage_difficulty_option_cc(_,0,_):-
   main_menu.
-manage_difficulty_option_cc(Size, Difficulty):-
-  difficulty(Difficulty, Option),
-  board_size(Size, Option2),
-  start_game(Option2, 'Computer', 'Computer', Option).
+manage_difficulty_option_cc(_,_,0):-
+  main_menu.
+manage_difficulty_option_cc(Size, Difficulty1, Difficulty2):-
+  board_size(Size, SizeOption),
+  
+  difficulty(Difficulty1, DifficultyOption1),
+  difficulty(Difficulty2, DifficultyOption2),
+  start_game(SizeOption, 'Computer', 'Computer', DifficultyOption1, DifficultyOption2).
 
 
 % print_menu/0
@@ -213,3 +223,25 @@ write('|                       2. Normal  (Greedy Strategy)                    |
 write('|                                                                       |\n'),
 write('|                       0. Go Back to Main Menu                         |\n'),
 write('|_______________________________________________________________________|\n').
+
+print_difficulty_menu(Player) :-
+  write(' _______________________________________________________________________ \n'),
+  write('|                                                                       |\n'), 
+  write('|                 *   *  ***  ****   ****   ***   **   *                |\n'),
+  write('|                 *   * *   * *   *  *   * *   *  * *  *                |\n'),
+  write('|                 ***** ***** *    * ****  *   *  *  * *                |\n'),
+  write('|                 *   * *   * *   *  * *   *   *  *   **                |\n'),
+  write('|                 *   * *   *  ***   *  *   ***   *    *                |\n'),
+  write('|               -----------------------------------------               |\n'),
+  write('|                                                                       |\n'),
+  write('|                           DIFFICULTY MENU                             |\n'),
+  format('|                           * Computer ~d *                              |\n' , [Player]),
+  write('|                                                                       |\n'),
+  write('|                       Choose a Difficulty Level:                      |\n'),
+  write('|                                                                       |\n'),
+  write('|                       1. Easy  (Random Strategy)                      |\n'),
+  write('|                                                                       |\n'),
+  write('|                       2. Normal  (Greedy Strategy)                    |\n'),
+  write('|                                                                       |\n'),
+  write('|                       0. Go Back to Main Menu                         |\n'),
+  write('|_______________________________________________________________________|\n').

@@ -94,4 +94,17 @@ check_position(Board, X, Y):-
     can_place(Board, X, Y, Result),
     Result =:= 0.
 
-
+% check_move(+GameState, +Player, +Row, +Col)
+% verifies if row and col from user input is present in list of valid moves
+check_move(GameState, _, Row, Col, _, _) :-
+    check_position(GameState, Row, Col).
+  check_move(GameState, Player, _, _, 'pp', _):-
+    write('\n| Invalid position. Choose again!\n'),
+    play_pp(GameState, Player).
+  check_move(GameState, Player, _, _, 'pc', Difficulty):-
+    write('\n| Invalid position. Choose again!\n'),
+    play_pc(GameState, Player, Difficulty).
+  check_move(GameState, Player, _, _, 'cp', Difficulty):-
+    write('\n| Invalid position. Choose again!\n'),
+    play_cp(GameState, Player, Difficulty).
+  

@@ -5,10 +5,20 @@ choose_move_computer(Board, 'Random', _, Row, Col):-
     length(ListOfMoves, L),
     random(0, L, Position),
     nth0(Position, ListOfMoves, Row-Col).
+
 choose_move_computer(GameState, 'Greedy', Player, Row, Col):-
     valid_moves(GameState, ListOfMoves),
     counter_of_moves(ListOfMoves, GameState, Player, Result),
-    samsort(Result, OrderedSolution), 
+    samsort(Result, OrderedSolution),
+    length(OrderedSolution, Size),
+    Size > 2,
+    random(0, 4, Position), %best 3
+    nth0(Position, OrderedSolution, _-Row-Col).
+
+choose_move_computer(GameState, 'Greedy', Player, Row, Col):-
+    valid_moves(GameState, ListOfMoves),
+    counter_of_moves(ListOfMoves, GameState, Player, Result),
+    samsort(Result, OrderedSolution),
     nth0(0, OrderedSolution, _-Row-Col).
 
 

@@ -3,11 +3,11 @@
 initial_state(5, [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0] ]).
 initial_state(7, [[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]]).
 
-
+% piece(+Number, -Code)
 % Codes for board pieces
-code(0, 32).   % space
-code(1, 215).  % × - Player 1
-code(2, 216).  % Ø - Player 2
+piece(0, 32).   % space
+piece(1, 215).  % × - Player 1
+piece(2, 216).  % Ø - Player 2
 
 
 % Codes for board rows
@@ -86,7 +86,7 @@ print_line([C|L]):-
 % write_player(C)
 % predicate that prints player piece
 write_player(C) :-
-  code(C, P), put_code(P).
+  piece(C, P), put_code(P).
 
 
 % display_board(+Board)
