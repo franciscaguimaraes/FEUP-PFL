@@ -26,7 +26,7 @@ is_human_cp(2). % ComputervsPlayer - player 2nd
 % starts game given boardSize, play mode and difficulty 
 start_game(Number, TypePlayer1, TypePlayer2, Difficulty):-
   clear, 
-  initial_state(Size, GameState),
+  initial_state(Number, GameState),
   display_board(GameState),
   get_play_mode(TypePlayer1, TypePlayer2, Mode),
   play_mode(Mode, GameState, Difficulty).
@@ -42,7 +42,7 @@ play_pp(GameState, Player) :-
   sleep(5),
   main_menu.
 play_pp(GameState, Player):-
-  choose_move_human(GameState, Player, Row, Col),
+  choose_move_human(GameState, Player, Row, Col, 'pp', 0),
   replace(GameState, Row, Col, Player, NewGameState),
   display_board(NewGameState),
   alternatePlayer(Player, NewPlayer),
@@ -51,20 +51,26 @@ play_pp(GameState, Player):-
 
 % choose_move_human(+GameState, +Player, -Row, -Col)
 % predicate that asks user for input 
-choose_move_human(GameState, Player, Row, Col) :- 
+choose_move_human(GameState, Player, Row, Col, Mode, Difficulty) :- 
   size_of_board(GameState, Size),
   format( '~n| Player ~d - ' , [Player]), write_player(Player), write( ' - make a move! \n\n'),
   read_inputs(Size, Row, Col), 
-  check_move(GameState, Player, Row, Col).
+  check_move(GameState, Player, Row, Col, Mode, Difficulty).
 
 
 % check_move(+GameState, +Player, +Row, +Col)
 % verifies if row and col from user input is present in list of valid moves
-check_move(GameState, _, Row, Col) :-
+check_move(GameState, _, Row, Col, _, _) :-
   check_position(GameState, Row, Col).
-check_move(GameState, Player, _, _):-
+check_move(GameState, Player, _, _, 'pp', _):-
   write('\n| Invalid position. Choose again!\n'),
   play_pp(GameState, Player).
+check_move(GameState, Player, _, _, 'pc', Difficulty):-
+  write('\n| Invalid position. Choose again!\n'),
+  play_pc(GameState, Player, Difficulty).
+check_move(GameState, Player, _, _, 'cp', Difficulty):-
+  write('\n| Invalid position. Choose again!\n'),
+  play_cp(GameState, Player, Difficulty).
 
 
 % play_pc(GameState, Player, Difficulty)
@@ -83,7 +89,7 @@ play_pc(GameState, 2, _) :-
   main_menu.
 play_pc(GameState, Player, Difficulty) :-  
   is_human_pc(Player),
-  choose_move_human(GameState, Player, Row, Col),
+  choose_move_human(GameState, Player, Row, Col, 'pc', Difficulty),
   replace(GameState, Row, Col, Player, NewGameState),
   display_board(NewGameState),
   alternatePlayer(Player, NewPlayer),
@@ -94,7 +100,7 @@ play_pc(GameState, Player , Difficulty) :-
   sleep(1),
   replace(GameState, Row, Col, Player, NewGameState), nl,
   display_board(NewGameState),
-  format('| Computer placed a piece in Row:~d Column:~a! ~n~n', [Row, Column]),
+  format('~n| Computer placed a piece in Row:~d Column:~a! ~n~n', [Row, Column]),
   alternatePlayer(Player, NewPlayer),
   play_pc(NewGameState, NewPlayer, Difficulty).
 
@@ -115,7 +121,7 @@ play_cp(GameState, 1, _) :-
   main_menu.
 play_cp(GameState, Player, Difficulty) :-  
   is_human_cp(Player),
-  choose_move_human(GameState, Player, Row, Col),
+  choose_move_human(GameState, Player, Row, Col, 'cp', Difficulty),
   replace(GameState, Row, Col, Player, NewGameState),
   display_board(NewGameState),
   alternatePlayer(Player, NewPlayer),
@@ -126,7 +132,7 @@ play_cp(GameState, Player , Difficulty) :-
   sleep(1),
   replace(GameState, Row, Col, Player, NewGameState), nl,
   display_board(NewGameState),
-  format('| Computer placed a piece in Row:~d Column:~a! ~n~n', [Row, Column]),
+  format('~n| Computer placed a piece in Row:~d Column:~a! ~n~n', [Row, Column]),
   alternatePlayer(Player, NewPlayer),
   play_cp(NewGameState, NewPlayer, Difficulty).
 
