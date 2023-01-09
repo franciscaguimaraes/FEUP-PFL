@@ -111,7 +111,7 @@ manage_difficulty_option_pc(Size, 1, Difficulty) :-
   board_size(Size, SizeOption),
   start_game(SizeOption, 'Human', 'Computer', DifficultyOption, 0).
 manage_difficulty_option_pc(Size, 2, Difficulty) :-
-  difficulty(Difficulty, Option),
+  difficulty(Difficulty, DifficultyOption),
   board_size(Size, SizeOption),
   start_game(SizeOption, 'Computer', 'Human', DifficultyOption, 0).
 
