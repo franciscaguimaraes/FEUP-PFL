@@ -1,6 +1,4 @@
 
-% added -1??
-
 % counter(+Number, +Acc, -Acc1)
 % Counter used to count pieces around position to be checked.
 counter(0, Acc, Acc).
